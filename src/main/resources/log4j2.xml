@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Properties>
+    <Property name="layout">%d %-5level %m%n</Property>
+  </Properties>
+  <Appenders>
+    <Console name="CONSOLE">
+      <PatternLayout pattern="${layout}" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.bamurdoch" level="INFO"/>
+    <Root level="ALL">
+      <AppenderRef ref="CONSOLE"/>
+    </Root>
+  </Loggers>
+</Configuration>
