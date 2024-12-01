@@ -3,7 +3,6 @@ package challenge._2024;
 import base.Solution;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,17 +51,17 @@ public class D01 extends Solution {
     }
     int sumSimilarity = 0;
     for (Integer i : list1) {
-      sumSimilarity += countNumberOfAppearances(i, list2);
+      sumSimilarity += calculateSimilarityScore(i, list2);
     }
     log.info("Total similarity: {}", sumSimilarity);
-
   }
 
-  public int countNumberOfAppearances(Integer value, List<Integer> input){
+  public int calculateSimilarityScore(Integer value, List<Integer> input) {
     int appearances = 0;
     for (Integer i : input) {
-      if (i.equals(value))
+      if (i.equals(value)) {
         appearances++;
+      }
     }
     return appearances * value;
   }
