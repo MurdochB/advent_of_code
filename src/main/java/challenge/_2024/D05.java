@@ -4,8 +4,10 @@ import base.Solution;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,27 +30,94 @@ public class D05 extends Solution {
 
   public void partOne() {
     log.info("# Part 1 #");
-    List<String> orderRules = new ArrayList<>();
-    List<String> updates = new ArrayList<>();
-    boolean firstMode = true;
-    for (String line : lines) {
-      if (line.isEmpty()) {
-        firstMode = false;
-        continue;
-      }
-      if (firstMode) {
-        orderRules.add(line);
-      } else {
-        updates.add(line);
-      }
-    }
+    Map<String, Set<String>> orderRules = getOrderRulesMap(lines);
+    List<String> updates = getUpdates(lines);
+
     int countMiddleValues = 0;
     for (String update : updates) {
-      if (checkUpdate(update, orderRules)) {
+      if (isValidUpdate(update, orderRules)) {
         countMiddleValues += getMiddleValue(update);
       }
     }
     log.info(countMiddleValues);
+  }
+
+  public void partTwo() {
+    log.info("# Part 2 #");
+    Map<String, Set<String>> orderRules = getOrderRulesMap(lines);
+    List<String> updates = getUpdates(lines);
+
+    int countMiddleValues = 0;
+    for (String update : updates) {
+      if (!isValidUpdate(update, orderRules)) {
+        countMiddleValues += getMiddleValue(fixInvalidUpdate(update, orderRules));
+      }
+    }
+    log.info(countMiddleValues);
+  }
+
+  private String fixInvalidUpdate(String update, Map<String, Set<String>> rules) {
+    List<String> curOrder = new LinkedList<>();
+    for (String s : update.split(",")) {
+      Set<String> mustBeBefore = rules.get(s);
+
+      int earliestIndex = 999;
+      if (mustBeBefore != null) {
+        for (String must : mustBeBefore) {
+          if (curOrder.contains(must)) {
+            earliestIndex = Math.min(earliestIndex, curOrder.indexOf(must));
+          }
+        }
+      }
+      if (earliestIndex == 999) {
+        curOrder.add(s);
+      } else {
+        curOrder.add(earliestIndex, s);
+      }
+    }
+    return String.join(",", curOrder);
+  }
+
+  private Map<String, Set<String>> getOrderRulesMap(List<String> in) {
+    Map<String, Set<String>> rules = new HashMap<>();
+    List<String> order = getOrderRulesList(in);
+    for (String o : order) {
+      String[] split = o.split("\\|");
+      if (rules.containsKey(split[0])) {
+        rules.get(split[0]).add(split[1]);
+      } else {
+        Set<String> newSet = new HashSet<>();
+        newSet.add(split[1]);
+        rules.put(split[0], newSet);
+      }
+    }
+    return rules;
+  }
+
+  private List<String> getOrderRulesList(List<String> in) {
+    List<String> orderRules = new ArrayList<>();
+    for (String s : in) {
+      if (s.isEmpty()) {
+        return orderRules;
+      }
+      orderRules.add(s);
+    }
+    return orderRules;
+  }
+
+  private List<String> getUpdates(List<String> in) {
+    List<String> updates = new ArrayList<>();
+    boolean readFromNow = false;
+    for (String s : in) {
+      if (s.isEmpty()) {
+        readFromNow = true;
+        continue;
+      }
+      if (readFromNow) {
+        updates.add(s);
+      }
+    }
+    return updates;
   }
 
   private int getMiddleValue(String update) {
@@ -56,35 +125,20 @@ public class D05 extends Solution {
     return Integer.parseInt(split[(split.length - 1) / 2]);
   }
 
-  private boolean checkUpdate(String update, List<String> ordering) {
-    Map<String, Set<String>> orders = new HashMap<>();
-    for (String o : ordering) {
-      String[] split = o.split("\\|");
-      if (orders.containsKey(split[0])){
-        orders.get(split[0]).add(split[1]);
-      } else {
-        Set<String> newSet = new HashSet<>();
-        newSet.add(split[1]);
-        orders.put(split[0], newSet);
-      }
-    }
-
+  private boolean isValidUpdate(String update, Map<String, Set<String>> rules) {
     StringBuilder inCurrentUpdate = new StringBuilder();
     for (String s : update.split(",")) {
-      Set<String> mustBeBefore = orders.get(s);
-      for (String must : mustBeBefore) {
-        if (inCurrentUpdate.toString().contains(must)){
-          return false;
+      Set<String> mustBeBefore = rules.get(s);
+      if (mustBeBefore != null) {
+        for (String must : mustBeBefore) {
+          if (inCurrentUpdate.toString().contains(must)) {
+            return false;
+          }
         }
       }
       inCurrentUpdate.append(s).append(",");
     }
-
     return true;
-  }
-
-  public void partTwo() {
-    log.info("# Part 2 #");
   }
 
   public void lore() {
