@@ -5,7 +5,6 @@ import static base.utils.FileUtil.inputToGrid;
 import base.Solution;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,21 +81,22 @@ public class D04 extends Solution {
 
     int countAppearances = 0;
     for (int[] a : allAs) {
-      if (!xWouldBeOutOfBounds(a, grid)){
-        String tl = grid[a[0]-1][a[1]-1];
-        String tr = grid[a[0]-1][a[1]+1];
-        String bl = grid[a[0]+1][a[1]-1];
-        String br = grid[a[0]+1][a[1]+1];
-        String diag1= tl + br;
-        String diag2=tr+bl;
+      if (!xWouldBeOutOfBounds(a, grid)) {
+        String tl = grid[a[0] - 1][a[1] - 1];
+        String tr = grid[a[0] - 1][a[1] + 1];
+        String bl = grid[a[0] + 1][a[1] - 1];
+        String br = grid[a[0] + 1][a[1] + 1];
+        String diag1 = tl + br;
+        String diag2 = tr + bl;
         if (diag1.contains("M") && diag1.contains("S") &&
-            diag2.contains("M") && diag2.contains("S")){
+            diag2.contains("M") && diag2.contains("S")) {
           countAppearances++;
         }
       }
     }
     log.info(countAppearances);
   }
+
   private boolean xWouldBeOutOfBounds(int[] a, String[][] grid) {
     int maxR = a[0] + 1;
     int minR = a[0] - 1;
