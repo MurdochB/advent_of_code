@@ -50,5 +50,12 @@ public class FileUtil {
     return wholeFile.toString();
   }
 
+  public static String[][] inputToGrid(List<String> input) {
+    String[][] grid = new String[input.size()][];
+    for (int i = 0; i < input.size(); i++) {
+      grid[i] = input.get(i).split("");
+    }
+    return grid;
+  }
   // ... Special readers can be added here if needed.
 }
