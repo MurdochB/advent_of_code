@@ -36,21 +36,21 @@ public class D08 extends Solution {
     Map<String, List<Coord>> antennas = findAntennas(grid);
     Set<Coord> antinodes = new HashSet<>();
     for (List<Coord> group : antennas.values()) {
-      antinodes.addAll(findAntinodes(grid, group));
+      antinodes.addAll(findFirstAntinodes(grid, group));
     }
     log.info("Unique antinodes: " + antinodes.size());
   }
 
-  private Set<Coord> findAntinodes(String[][] grid, List<Coord> group) {
+  private Set<Coord> findFirstAntinodes(String grid[][], List<Coord> group) {
     Set<Coord> antinodes = new HashSet<>();
     for (int i = 0; i < group.size(); i++) {
       for (int j = 0; j < group.size(); j++) {
         if (i == j) {
           continue;
         }
-        List<Coord> coords = generatePossibleAntinodeCoords(group.get(i), group.get(j));
+        List<Coord> coords = oneStepAntinodeCoords(group.get(i), group.get(j));
         for (Coord coord : coords) {
-          if (isAntinodeInGrid(grid, coord)) {
+          if (isAntinodeInGrid(grid, coord)){
             antinodes.add(coord);
           }
         }
@@ -59,12 +59,7 @@ public class D08 extends Solution {
     return antinodes;
   }
 
-  private boolean isAntinodeInGrid(String[][] grid, Coord antinode) {
-    return !(antinode.r() < 0 || antinode.r() >= grid.length ||
-        antinode.c() < 0 || antinode.c() >= grid.length);
-  }
-
-  private List<Coord> generatePossibleAntinodeCoords(Coord a, Coord b) {
+  private List<Coord> oneStepAntinodeCoords(Coord a, Coord b) {
     List<Coord> anti = new ArrayList<>();
     Direction one = a.distance(b);
     Direction two = b.distance(a);
@@ -75,7 +70,50 @@ public class D08 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    String[][] grid = inputToGrid(lines);
+    Map<String, List<Coord>> antennas = findAntennas(grid);
+    Set<Coord> antinodes = new HashSet<>();
+    for (List<Coord> group : antennas.values()) {
+      antinodes.addAll(findAllAntinodes(grid, group));
+    }
+    log.info("Unique antinodes: " + antinodes.size());
+  }
 
+  private Set<Coord> findAllAntinodes(String grid[][], List<Coord> group) {
+    Set<Coord> antinodes = new HashSet<>();
+    for (int i = 0; i < group.size(); i++) {
+      antinodes.add(group.get(i));
+      for (int j = 0; j < group.size(); j++) {
+        if (i == j) {
+          continue;
+        }
+        List<Coord> coords = allAntinodes(grid, group.get(i), group.get(j));
+        for (Coord coord : coords) {
+          if (isAntinodeInGrid(grid, coord)){
+            antinodes.add(coord);
+          }
+        }
+      }
+    }
+
+    return antinodes;
+  }
+
+  private List<Coord> allAntinodes(String grid[][], Coord a, Coord b) {
+    List<Coord> antis = new ArrayList<>();
+    Direction one = a.distance(b);
+    Direction two = b.distance(a);
+    Coord nextAntiNode = b.relative(one);
+    while (isAntinodeInGrid(grid, nextAntiNode)){
+      antis.add(nextAntiNode);
+      nextAntiNode = nextAntiNode.relative(one);
+    }
+    nextAntiNode = a.relative(two);
+    while (isAntinodeInGrid(grid, nextAntiNode)){
+      antis.add(nextAntiNode);
+      nextAntiNode = nextAntiNode.relative(two);
+    }
+    return antis;
   }
 
   private Map<String, List<Coord>> findAntennas(String[][] grid) {
@@ -92,6 +130,11 @@ public class D08 extends Solution {
       }
     }
     return antennaToCoords;
+  }
+
+  private boolean isAntinodeInGrid(String[][] grid, Coord antinode) {
+    return !(antinode.r() < 0 || antinode.r() >= grid.length ||
+        antinode.c() < 0 || antinode.c() >= grid.length);
   }
 
   public void lore() {
