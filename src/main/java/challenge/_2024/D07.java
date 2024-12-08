@@ -35,22 +35,29 @@ public class D07 extends Solution {
 
     int n = operands.size();
     int totalCombinations = (int) Math.pow(2, n - 1);
+    log.debug("Total combinations possible: " + totalCombinations);
     for (int i = 0; i < totalCombinations; i++) {
+      StringBuilder ops = new StringBuilder();
       long number = operands.get(0);
+
+      ops.append(number);
       int temp = i;
       for (int j = 0; j < n - 1; j++) {
         int opIndex = temp % 2;
         temp /= 2;
         switch (opIndex) {
           case 0:
+            ops.append(" * ").append(operands.get(j+1));
             number *= operands.get(j + 1);
             break;
           case 1:
+            ops.append(" + ").append(operands.get(j+1));
             number += operands.get(j + 1);
             break;
           default:
         }
       }
+      log.debug("COMBINATION " + i + " |: " + ops + " = " + number);
       if (number == target) {
         return target;
       }
@@ -71,25 +78,32 @@ public class D07 extends Solution {
 
     int n = operands.size();
     int totalCombinations = (int) Math.pow(3, n - 1);
+    log.debug("Total combinations possible: " + totalCombinations);
     for (int i = 0; i < totalCombinations; i++) {
       long number = operands.get(0);
+      StringBuilder ops = new StringBuilder();
+      ops.append(number);
       int temp = i;
       for (int j = 0; j < n - 1; j++) {
         int opIndex = temp % 3;
         temp /= 3;
         switch (opIndex) {
           case 0:
+            ops.append(" * ").append(operands.get(j+1));
             number *= operands.get(j + 1);
             break;
           case 1:
+            ops.append(" + ").append(operands.get(j+1));
             number += operands.get(j + 1);
             break;
           case 2:
+            ops.append(" | ").append(operands.get(j+1));
             number = Long.parseLong(number + "" + operands.get(j + 1));
             break;
           default:
         }
       }
+      log.debug("COMBINATION " + i + " |: " + ops + " = " + number);
       if (number == target) {
         return target;
       }
