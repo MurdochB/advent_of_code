@@ -4,8 +4,12 @@ import static base.utils.FileUtil.inputToGrid;
 
 import base.Solution;
 import base.utils.Coord;
+import base.utils.Direction;
+import com.sun.jdi.connect.ListeningConnector;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,16 +33,35 @@ public class D10 extends Solution {
     log.info("# Part 1 #");
     String[][] grid = inputToGrid(lines);
     List<Coord> trailheads = findTrailheads(grid);
+
     int totalScore = 0;
     for (Coord trailhead : trailheads) {
-      totalScore += scoreTrailhead(trailhead);
+      totalScore += scoreTrailHead(grid, trailhead, 0, new HashSet<>());
     }
     log.info("Total score: " + totalScore);
   }
 
-  private int scoreTrailhead(Coord trailhead) {
+  private int scoreTrailHead(String[][] grid, Coord pos, int cur, Set<Coord> visited){
+    visited.add(pos);
+    if(cur == 9){
+      return 1;
+    }
+    int score = 0;
+    for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
+      Coord step = pos.relative(dir);
+      if (isNextNumber(cur + 1, step, grid) && !visited.contains(step)){
+        score += scoreTrailHead(grid, step, Integer.parseInt(grid[step.r()][step.c()]), visited);
+      }
+    }
+    return score;
+  }
 
-    return 1;
+  private boolean isNextNumber(int current, Coord step, String[][] grid) {
+    if (isCoordInInGrid(grid, step)) {
+      int val = Integer.parseInt(grid[step.r()][step.c()]);
+      return val == current;
+    }
+    return false;
   }
 
   public void partTwo() {
@@ -49,12 +72,17 @@ public class D10 extends Solution {
     List<Coord> trailheads = new ArrayList<>();
     for (int r = 0; r < grid.length; r++) {
       for (int c = 0; c < grid.length; c++) {
-        if(grid[r][c].equals("0")){
+        if (grid[r][c].equals("0")) {
           trailheads.add(new Coord(r, c));
         }
       }
     }
     return trailheads;
+  }
+
+  private boolean isCoordInInGrid(String[][] grid, Coord coord) {
+    return !(coord.r() < 0 || coord.r() >= grid.length ||
+        coord.c() < 0 || coord.c() >= grid.length);
   }
 
   public void lore() {
