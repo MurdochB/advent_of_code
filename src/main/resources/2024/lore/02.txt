@@ -1,1 +1,12 @@
-Ready for day 2
+For Day 02; We head over to the red-nosed reindeer nuclear fusion/fission plant.
+
+We get a list of reports which contain levels. We are given some rules that mean reports are safe:
+- The levels are either all increasing or all decreasing.
+- Any two adjacent levels differ by at least one and at most three.
+
+For part 1, we just implement the requirements above.
+We can check if the first two levels are increasing or decreasing and set a flag that means the report must continue in that fashion.
+We can also check that each step changes between 1 and 3 steps.
+
+For part 2, we can now safely tolerate a single bad level.
+I create a list of 'potential' reports, each removing one level - and tries them all. If any pass, that report is safe.

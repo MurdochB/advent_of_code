@@ -3,7 +3,6 @@ package challenge._2024;
 import base.Solution;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,9 +24,10 @@ public class D02 extends Solution {
 
   public void partOne() {
     log.info("# Part 1 #");
+    log.info(lore);
     int safeReports = 0;
     for (String line : lines) {
-      if (reportIsSafe(line)){
+      if (reportIsSafe(line)) {
         safeReports++;
       }
     }
@@ -41,11 +41,11 @@ public class D02 extends Solution {
       List<String> potentialReports = createPotentialReports(line);
       boolean safeReportFound = false;
       for (String potentialReport : potentialReports) {
-        if (reportIsSafe(potentialReport)){
+        if (reportIsSafe(potentialReport)) {
           safeReportFound = true;
         }
       }
-      if (safeReportFound){
+      if (safeReportFound) {
         safeReports++;
       }
     }
@@ -60,7 +60,7 @@ public class D02 extends Solution {
     for (int i = 0; i < split.length; i++) {
       StringBuilder newPotential = new StringBuilder();
       for (int n = 0; n < split.length; n++) {
-        if (n == i){
+        if (n == i) {
           continue;
         }
         newPotential.append(split[n]).append(" ");
@@ -73,23 +73,23 @@ public class D02 extends Solution {
   private boolean reportIsSafe(String line) {
     String[] levels = line.split(" ");
 
-    boolean shouldIncrease = false;
-    if (Objects.equals(levels[0], levels[1]))
-      return false; // can't have stable levels
-    if (Integer.parseInt(levels[0]) < Integer.parseInt(levels[1]))
-      shouldIncrease = true;
+    boolean shouldIncrease = Integer.parseInt(levels[0]) < Integer.parseInt(levels[1]);
     for (int i = 1; i < levels.length; i++) {
       int prev = Integer.parseInt(levels[i - 1]);
       int curr = Integer.parseInt(levels[i]);
-      if (prev == curr)
+      if (prev == curr) {
         return false;
-      if ((shouldIncrease && prev > curr) || (!shouldIncrease && prev < curr))
+      }
+      if ((shouldIncrease && prev > curr) || (!shouldIncrease && prev < curr)) {
         return false;
-      if (Math.abs(prev - curr) > 3)
+      }
+      if (Math.abs(prev - curr) > 3) {
         return false;
+      }
     }
     return true;
   }
+
   public void lore() {
     log.info(lore);
   }
