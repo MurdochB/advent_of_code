@@ -56,6 +56,20 @@ public class D10 extends Solution {
     return score;
   }
 
+  private int rateTrailHead(String[][] grid, Coord pos, int cur){
+    if(cur == 9){
+      return 1;
+    }
+    int rating = 0;
+    for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
+      Coord step = pos.relative(dir);
+      if (isNextNumber(cur + 1, step, grid)){
+        rating += rateTrailHead(grid, step, Integer.parseInt(grid[step.r()][step.c()]));
+      }
+    }
+    return rating;
+  }
+
   private boolean isNextNumber(int current, Coord step, String[][] grid) {
     if (isCoordInInGrid(grid, step)) {
       int val = Integer.parseInt(grid[step.r()][step.c()]);
@@ -66,6 +80,14 @@ public class D10 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    String[][] grid = inputToGrid(lines);
+    List<Coord> trailheads = findTrailheads(grid);
+
+    int totalRating = 0;
+    for (Coord trailhead : trailheads) {
+      totalRating += rateTrailHead(grid, trailhead, 0);
+    }
+    log.info("Total rating: " + totalRating);
   }
 
   private List<Coord> findTrailheads(String[][] grid) {
