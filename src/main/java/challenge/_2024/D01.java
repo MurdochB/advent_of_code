@@ -1,6 +1,7 @@
 package challenge._2024;
 
 import base.Solution;
+import base.utils.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -24,17 +25,12 @@ public class D01 extends Solution {
 
   public void partOne() {
     log.info("# Part 1 #");
-    List<Integer> list1 = new ArrayList<>();
-    List<Integer> list2 = new ArrayList<>();
-    for (String line : lines) {
-      String[] split = line.split("   ");
-      list1.add(Integer.valueOf(split[0]));
-      list2.add(Integer.valueOf(split[1]));
-    }
-    List<Integer> list1Sorted = list1.stream().sorted().toList();
-    List<Integer> list2Sorted = list2.stream().sorted().toList();
+    log.info(lore);
+    Pair<List<Integer>> listPair = genLists(lines);
+    List<Integer> list1Sorted = listPair.getLeft().stream().sorted().toList();
+    List<Integer> list2Sorted = listPair.getRight().stream().sorted().toList();
     int sumDistance = 0;
-    for (int i = 0; i < list1.size(); i++) {
+    for (int i = 0; i < list1Sorted.size(); i++) {
       sumDistance += Math.abs(list1Sorted.get(i) - list2Sorted.get(i));
     }
     log.info("Total distance: {}", sumDistance);
@@ -42,16 +38,10 @@ public class D01 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
-    List<Integer> list1 = new ArrayList<>();
-    List<Integer> list2 = new ArrayList<>();
-    for (String line : lines) {
-      String[] split = line.split("   ");
-      list1.add(Integer.valueOf(split[0]));
-      list2.add(Integer.valueOf(split[1]));
-    }
+    Pair<List<Integer>> listPair = genLists(lines);
     int sumSimilarity = 0;
-    for (Integer i : list1) {
-      sumSimilarity += calculateSimilarityScore(i, list2);
+    for (Integer i : listPair.getLeft()) {
+      sumSimilarity += calculateSimilarityScore(i, listPair.getRight());
     }
     log.info("Total similarity: {}", sumSimilarity);
   }
@@ -64,6 +54,17 @@ public class D01 extends Solution {
       }
     }
     return appearances * value;
+  }
+
+  private Pair<List<Integer>> genLists(List<String> input) {
+    List<Integer> list1 = new ArrayList<>();
+    List<Integer> list2 = new ArrayList<>();
+    for (String line : input) {
+      String[] split = line.split(" {3}");
+      list1.add(Integer.valueOf(split[0]));
+      list2.add(Integer.valueOf(split[1]));
+    }
+    return new Pair<>(list1, list2);
   }
 
   public void lore() {

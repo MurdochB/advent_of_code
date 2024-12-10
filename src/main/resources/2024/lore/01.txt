@@ -1,1 +1,5 @@
-Ready for day 1
+For Day 01; We're on the hunt for the Chief Historian.
+
+We essentially get two lists, separated with 3 spaces.
+For part 1, we need to calculate the distance between them when sorted, which can be done simply with Math.abs.
+For part 2, we do things slightly differently to calculate the 'similarity' - adding the number of times items in list 1 appear in list 2.
