@@ -1,0 +1,7 @@
+For Day 03; We go to a Toboggan rental shop, and they're having some computer trouble.
+
+Here we are going to make use of regex. We're looking for anything that looks like mul(x,y) in a big string of random memory.
+
+For part 1, we just find all the mul(x,y) in the input, and add all the results of the multiplications.
+For part 2, we also need to look out for do() and don't() - which enables or disables the 'adding up' we are doing.
+I can add the do and don't commands to my regex, switching a flag if I need to add the multiplications or not.
