@@ -59,6 +59,9 @@ public class D11 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
 
+    // Instead of actually keeping track of the list of stones in the order...
+    // I just need to keep track of it in a map instead
+    // Map<String, Integer> = {"0": 10, "1": 23} etc...
   }
 
   private String trimZeros(String word) {
