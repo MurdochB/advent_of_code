@@ -24,23 +24,14 @@ public class D13 extends Solution {
   public void partOne() {
     log.info("# Part 1 #");
     this.lore();
+    long tokenCost = 0L;
     for (String machine : wholeLines.split("\n\n")) {
-      parseMachine(machine);
+      tokenCost += parseMachine(machine, 0L);
     }
-
-    /**
-     Button A: X+94, Y+34
-     Button B: X+22, Y+67
-     Prize: X=8400, Y=5400
-
-
-     94a + 22b=8400
-     34a + 67b=5400
-     */
-
+    log.info(tokenCost);
   }
 
-  private void parseMachine(String machine) {
+  private long parseMachine(String machine, long offset) {
     String[] split = machine.split("\n");
     //Button A: X+94, Y+34
     //Button B: X+22, Y+67
@@ -59,12 +50,16 @@ public class D13 extends Solution {
     long bX = buttonB.getLeft();
     long bY = buttonB.getRight();
     String[] resSplit = split[2].substring(9).split(", Y=");
-    long rX = Long.parseLong(resSplit[0]);
-    long rY = Long.parseLong(resSplit[1]);
+    long rX = Long.parseLong(resSplit[0]) + offset;
+    long rY = Long.parseLong(resSplit[1]) + offset;
 
-    log.info(aX + "a + " + bX + "b = " + rX);
-    log.info(aY + "a + " + bY + "b = " + rY);
-    log.info(" ");
+    double a = ((double) (bX * rY) - (bY * rX)) / ((bX * aY) - (bY * aX));
+    double b = (rY - (aY * a)) / bY;
+
+    if (a % 1 == 0 && b % 1 == 0) {
+      return (long) (a * 3 + b);
+    }
+    return 0L;
   }
 
   private Pair<Long> parseButton(String button) {
@@ -75,7 +70,12 @@ public class D13 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
-
+    long tokenCost = 0L;
+    long offset = 10000000000000L;
+    for (String machine : wholeLines.split("\n\n")) {
+      tokenCost += parseMachine(machine, offset);
+    }
+    log.info(tokenCost);
   }
 
 

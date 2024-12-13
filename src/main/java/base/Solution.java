@@ -14,9 +14,11 @@ public abstract class Solution {
 
   protected List<String> lines;
   protected String lore;
+  protected String wholeLines;
 
   protected Solution(String inputFile, String loreFile) {
     lines = FileUtil.readLines(inputFile);
+    wholeLines = FileUtil.readWholeFile(inputFile);
     lore = FileUtil.readWholeFile(loreFile);
   }
 
