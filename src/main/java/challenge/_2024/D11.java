@@ -3,8 +3,10 @@ package challenge._2024;
 import base.Solution;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,10 +34,10 @@ public class D11 extends Solution {
     int blinksWanted = 25;
 
     for (int i = 0; i < blinksWanted; i++) {
-      printStones(i, stones);
+      printStoneCount(i, stones);
       stones = step(stones);
     }
-    printStones(blinksWanted, stones);
+    printStoneCount(blinksWanted, stones);
   }
 
   private List<String> step(List<String> stones) {
@@ -58,10 +60,37 @@ public class D11 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    Map<String, Long> stones = new HashMap<>();
+    for (String s : lines.get(0).split(" ")) {
+      stones.put(s, 1L);
+    }
+    int blinksWanted = 75;
+    for (int i = 0; i < blinksWanted; i++) {
+      printStoneCount(i, stones);
+      stones = step2(stones);
+    }
+    printStoneCount(blinksWanted, stones);
+  }
 
-    // Instead of actually keeping track of the list of stones in the order...
-    // I just need to keep track of it in a map instead
-    // Map<String, Integer> = {"0": 10, "1": 23} etc...
+  private Map<String, Long> step2(Map<String, Long> stones) {
+    Map<String, Long> newStones = new HashMap<>();
+    for (Entry<String, Long> entry : stones.entrySet()) {
+      String stoneType = entry.getKey();
+      if (stoneType.equals("0")) {
+        newStones.merge("1", entry.getValue(), Long::sum);
+      } else if (stoneType.length() % 2 == 0) {
+        // splits into two new results
+        String newSt1 = trimZeros(stoneType.substring(0, stoneType.length() / 2));
+        String newSt2 = trimZeros(stoneType.substring(stoneType.length() / 2));
+        newStones.merge(newSt1, entry.getValue(), Long::sum);
+        newStones.merge(newSt2, entry.getValue(), Long::sum);
+      } else {
+        long l = Long.parseLong(stoneType);
+        l *= 2024;
+        newStones.merge(Long.toString(l), entry.getValue(), Long::sum);
+      }
+    }
+    return newStones;
   }
 
   private String trimZeros(String word) {
@@ -69,10 +98,17 @@ public class D11 extends Solution {
     return Long.toString(l);
   }
 
-  private void printStones(int step, List<String> stones){
+  private void printStoneCount(int step, List<String> stones) {
     StringBuilder sb = new StringBuilder();
     sb.append(step).append(" : ");
     sb.append(stones.size());
+    log.info(sb);
+  }
+
+  private void printStoneCount(int step, Map<String, Long> stones) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(step).append(" : ").append(
+        stones.values().stream().mapToLong(Long::longValue).sum());
     log.info(sb);
   }
 
