@@ -1,10 +1,7 @@
 package challenge._2024;
 
 import base.Solution;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.logging.log4j.LogManager;
@@ -29,33 +26,16 @@ public class D11 extends Solution {
   public void partOne() {
     log.info("# Part 1 #");
     this.lore();
-    List<String> stones = new ArrayList<>();
-    Collections.addAll(stones, lines.get(0).split(" "));
+    Map<String, Long> stones = new HashMap<>();
+    for (String s : lines.get(0).split(" ")) {
+      stones.put(s, 1L);
+    }
     int blinksWanted = 25;
-
     for (int i = 0; i < blinksWanted; i++) {
       printStoneCount(i, stones);
-      stones = step(stones);
+      stones = blink(stones);
     }
     printStoneCount(blinksWanted, stones);
-  }
-
-  private List<String> step(List<String> stones) {
-    List<String> newStones = new ArrayList<>();
-    for (String s : stones) {
-      if (s.equals("0")) {
-        newStones.add("1");
-      } else if (s.length() % 2 == 0) {
-        newStones.add(trimZeros(s.substring(0, s.length() / 2)));
-        newStones.add(trimZeros(s.substring(s.length() / 2)));
-      } else {
-        long l = Long.parseLong(s);
-        l *= 2024;
-        newStones.add(Long.toString(l));
-      }
-    }
-
-    return newStones;
   }
 
   public void partTwo() {
@@ -67,42 +47,35 @@ public class D11 extends Solution {
     int blinksWanted = 75;
     for (int i = 0; i < blinksWanted; i++) {
       printStoneCount(i, stones);
-      stones = step2(stones);
+      stones = blink(stones);
     }
     printStoneCount(blinksWanted, stones);
   }
 
-  private Map<String, Long> step2(Map<String, Long> stones) {
-    Map<String, Long> newStones = new HashMap<>();
-    for (Entry<String, Long> entry : stones.entrySet()) {
-      String stoneType = entry.getKey();
+  private Map<String, Long> blink(Map<String, Long> stones) {
+    Map<String, Long> afterBlinkStones = new HashMap<>();
+    for (Entry<String, Long> blinking : stones.entrySet()) {
+      String stoneType = blinking.getKey();
       if (stoneType.equals("0")) {
-        newStones.merge("1", entry.getValue(), Long::sum);
+        afterBlinkStones.merge("1", blinking.getValue(), Long::sum);
       } else if (stoneType.length() % 2 == 0) {
-        // splits into two new results
-        String newSt1 = trimZeros(stoneType.substring(0, stoneType.length() / 2));
-        String newSt2 = trimZeros(stoneType.substring(stoneType.length() / 2));
-        newStones.merge(newSt1, entry.getValue(), Long::sum);
-        newStones.merge(newSt2, entry.getValue(), Long::sum);
+        // Even length stones split into two stones
+        String newStone1 = trimZeros(stoneType.substring(0, stoneType.length() / 2));
+        String newStone2 = trimZeros(stoneType.substring(stoneType.length() / 2));
+        afterBlinkStones.merge(newStone1, blinking.getValue(), Long::sum);
+        afterBlinkStones.merge(newStone2, blinking.getValue(), Long::sum);
       } else {
         long l = Long.parseLong(stoneType);
         l *= 2024;
-        newStones.merge(Long.toString(l), entry.getValue(), Long::sum);
+        afterBlinkStones.merge(Long.toString(l), blinking.getValue(), Long::sum);
       }
     }
-    return newStones;
+    return afterBlinkStones;
   }
 
   private String trimZeros(String word) {
     long l = Long.parseLong(word);
     return Long.toString(l);
-  }
-
-  private void printStoneCount(int step, List<String> stones) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(step).append(" : ");
-    sb.append(stones.size());
-    log.info(sb);
   }
 
   private void printStoneCount(int step, Map<String, Long> stones) {
