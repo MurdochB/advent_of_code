@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Handler;
-import java.util.stream.Collectors;
-import javax.sound.sampled.spi.AudioFileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,14 +31,64 @@ public class D14 extends Solution {
   public void partOne() {
     log.info("# Part 1 #");
     this.lore();
-    int gridWidth = 11;
-    int gridHeight = 7;
+    int steps = 100;
+    int gridWidth = 101;
+    int gridHeight = 103;
 
     List<Map<Coord, Direction>> robots = lines.stream()
         .map(this::parseIntoRobot)
         .toList();
 
-    robots.forEach(this::logRobot);
+    for (int i = 0; i < steps; i++) {
+      List<Map<Coord, Direction>> newRobots = new ArrayList<>();
+      for (Map<Coord, Direction> robot : robots) {
+        newRobots.add(stepRobot(robot, gridWidth, gridHeight));
+      }
+      robots = newRobots;
+    }
+    int safety = calculateSafety(robots, gridWidth, gridHeight);
+    log.info(safety);
+  }
+
+  private int calculateSafety(List<Map<Coord, Direction>> robots, int gridWidth, int gridHeight) {
+    Map<Direction, Integer> quads = new HashMap<>();
+
+    Coord center = new Coord(((gridHeight - 1) / 2), ((gridWidth - 1) / 2));
+    for (Map<Coord, Direction> robot : robots) {
+      for (Entry<Coord, Direction> entry : robot.entrySet()) {
+        quads.merge(Direction.normalise(center.distance(entry.getKey())), 1, Integer::sum);
+      }
+    }
+
+    return quads.get(Direction.NW) * quads.get(Direction.NE) * quads.get(Direction.SW) * quads.get(Direction.SE);
+  }
+
+  private Map<Coord, Direction> stepRobot(Map<Coord, Direction> r, int gridWidth, int gridHeight) {
+    Map<Coord, Direction> newRobot = new HashMap<>();
+    Set<Entry<Coord, Direction>> entries = r.entrySet();
+    for (Entry<Coord, Direction> entry : entries) {
+      Coord stepped = entry.getKey().relative(entry.getValue());
+      if (stepped.c() < 0) {
+        stepped.setC(stepped.c() + gridHeight);
+      }
+      if (stepped.c() > gridHeight - 1) {
+        stepped.setC(stepped.c() - gridHeight);
+      }
+      if (stepped.r() < 0) {
+        stepped.setR(stepped.r() + gridWidth);
+      }
+      if (stepped.r() > gridWidth - 1) {
+        stepped.setR(stepped.r() - gridWidth);
+      }
+      newRobot.put(stepped, entry.getValue());
+    }
+    return newRobot;
+  }
+
+
+  public void partTwo() {
+    log.info("# Part 2 #");
+
   }
 
   private Map<Coord, Direction> parseIntoRobot(String line) {
@@ -54,11 +101,6 @@ public class D14 extends Solution {
     Direction dir = new Direction(Integer.parseInt(vel[0]), Integer.parseInt(vel[1]));
     robot.put(robotStartCoord, dir);
     return robot;
-  }
-
-  public void partTwo() {
-    log.info("# Part 2 #");
-
   }
 
   private void logRobot(Map<Coord, Direction> robot) {

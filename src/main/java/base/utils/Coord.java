@@ -18,8 +18,20 @@ public class Coord extends Pair<Integer> {
     return this.getRight();
   }
 
+  public Coord relative(Direction d, int n) {
+    return new Coord(r() + (n * d.dR()), c() + (n * d.dC()));
+  }
+
   public Coord relative(Direction d) {
-    return new Coord(r() + d.dR(), c() + d.dC());
+    return relative(d, 1);
+  }
+
+  public void setR(int r) {
+    setLeft(r);
+  }
+
+  public void setC(int c) {
+    setRight(c);
   }
 
   @Override

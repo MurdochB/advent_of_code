@@ -15,6 +15,37 @@ public class Direction extends Coord {
   public static final Direction[] CARDINAL_DIRECTIONS = {N, E, S, W};
   public static final Direction[] ORDINAL_DIRECTIONS = {NE, SE, SW, NW};
 
+  public static Direction normalise(Direction dir){
+    // ignore the magnitude of a direction
+    int row = dir.dR();
+    int col = dir.dC();
+    if (row > 1)
+      row = 1;
+    if (row < 0)
+      row = -1;
+    if (col > 1)
+      col = 1;
+    if (col < 0)
+      col = -1;
+    return new Direction(row, col);
+  }
+
+  public static Direction right(Direction dir) {
+    if (dir.equals(Direction.N)) {
+      return Direction.E;
+    }
+    if (dir.equals(Direction.E)) {
+      return Direction.S;
+    }
+    if (dir.equals(Direction.S)) {
+      return Direction.W;
+    }
+    if (dir.equals(Direction.W)) {
+      return Direction.N;
+    }
+    return null;
+  }
+
   public Direction(int dR, int dC) {
     super(dR, dC);
   }
