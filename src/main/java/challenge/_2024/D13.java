@@ -78,7 +78,6 @@ public class D13 extends Solution {
     log.info(tokenCost);
   }
 
-
   public void lore() {
     log.info(lore);
   }
