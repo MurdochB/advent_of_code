@@ -53,14 +53,15 @@ public class D14 extends Solution {
   private int calculateSafety(List<Map<Coord, Direction>> robots, int gridWidth, int gridHeight) {
     Map<Direction, Integer> quads = new HashMap<>();
 
-    Coord center = new Coord(((gridHeight - 1) / 2), ((gridWidth - 1) / 2));
+    Coord center = new Coord(((gridWidth - 1) / 2), ((gridHeight - 1) / 2));
     for (Map<Coord, Direction> robot : robots) {
       for (Entry<Coord, Direction> entry : robot.entrySet()) {
         quads.merge(Direction.normalise(center.distance(entry.getKey())), 1, Integer::sum);
       }
     }
 
-    return quads.get(Direction.NW) * quads.get(Direction.NE) * quads.get(Direction.SW) * quads.get(Direction.SE);
+    return quads.get(Direction.NW) * quads.get(Direction.NE) * quads.get(Direction.SW) * quads.get(
+        Direction.SE);
   }
 
   private Map<Coord, Direction> stepRobot(Map<Coord, Direction> r, int gridWidth, int gridHeight) {
