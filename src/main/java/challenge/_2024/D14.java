@@ -3,6 +3,7 @@ package challenge._2024;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
+import com.sun.jdi.ClassObjectReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,40 @@ public class D14 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    int gridWidth = 101;
+    int gridHeight = 103;
 
+    List<Map<Coord, Direction>> robots = lines.stream()
+        .map(this::parseIntoRobot)
+        .toList();
+
+    for (int i = 0; i < 8000; i++) {
+      List<Map<Coord, Direction>> newRobots = new ArrayList<>();
+      for (Map<Coord, Direction> robot : robots) {
+        newRobots.add(stepRobot(robot, gridWidth, gridHeight));
+      }
+      robots = newRobots;
+      if (findOverlaps(robots).isEmpty()) {
+        logRobots(robots, gridWidth, gridHeight);
+        log.info("Step :" + (i + 1));
+      }
+    }
+  }
+
+  private List<Coord> findOverlaps(List<Map<Coord, Direction>> robots) {
+    Map<Coord, Integer> overlaps = new HashMap<>();
+    for (Map<Coord, Direction> robot : robots) {
+      for (Coord coord : robot.keySet()) {
+        overlaps.merge(coord, 1, Integer::sum);
+      }
+    }
+    List<Coord> overlapsToReturn = new ArrayList<>();
+    for (Entry<Coord, Integer> over : overlaps.entrySet()) {
+      if (over.getValue() > 1) {
+        overlapsToReturn.add(over.getKey());
+      }
+    }
+    return overlapsToReturn;
   }
 
   private Map<Coord, Direction> parseIntoRobot(String line) {
@@ -102,6 +136,24 @@ public class D14 extends Solution {
     Direction dir = new Direction(Integer.parseInt(vel[0]), Integer.parseInt(vel[1]));
     robot.put(robotStartCoord, dir);
     return robot;
+  }
+
+  private void logRobots(List<Map<Coord, Direction>> robots, int width, int height) {
+    List<Coord> allRobots = new ArrayList<>();
+    for (Map<Coord, Direction> robot : robots) {
+      allRobots.addAll(robot.keySet());
+    }
+    for (int h = 0; h < height; h++) {
+      StringBuilder sb = new StringBuilder();
+      for (int w = 0; w < width; w++) {
+        if (allRobots.contains(new Coord(w, h))) {
+          sb.append("#");
+        } else {
+          sb.append(".");
+        }
+      }
+      log.info(sb);
+    }
   }
 
   private void logRobot(Map<Coord, Direction> robot) {
