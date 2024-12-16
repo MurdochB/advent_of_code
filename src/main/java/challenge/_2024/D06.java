@@ -5,7 +5,10 @@ import static base.utils.FileUtil.inputToGrid;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +40,7 @@ public class D06 extends Solution {
     printGrid(grid);
   }
 
-  private Set<Coord> findGuardPath(String[][] grid, Coord curr, Direction dir){
+  private Set<Coord> findGuardPath(String[][] grid, Coord curr, Direction dir) {
     Set<Coord> visited = new HashSet<>();
     while (!peakNextStep(grid, curr, dir).equals("D")) {
       visited.add(curr);
@@ -53,7 +56,54 @@ public class D06 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    String[][] grid = inputToGrid(lines);
+    Coord curr = findStart(grid);
+    Direction dir = Direction.N;
+    Set<Coord> guardNormalPath = findGuardPath(grid, curr, dir);
+    guardNormalPath.remove(findStart(grid));
+    int done = 1;
+    int loopedPaths = 0;
+
+    List<Coord> allPossibleBlockers = new ArrayList<>();
+    for (int r = 0; r < grid.length; r++) {
+      for (int c = 0; c < grid.length; c++) {
+        allPossibleBlockers.add(new Coord(r, c));
+      }
+    }
+    allPossibleBlockers.remove(findStart(grid));
+    for (Coord newBlocker : allPossibleBlockers) {
+      grid = inputToGrid(lines);
+      curr = findStart(grid);
+      dir = Direction.N;
+      if (doesGuardLoop(grid, curr, dir, newBlocker)) {
+        loopedPaths++;
+      }
+      log.info(done);
+      done++;
+    }
+
+    log.info("Guard loops: " + loopedPaths);
   }
+
+  private boolean doesGuardLoop(String[][] grid, Coord curr, Direction dir, Coord newBlockage) {
+    grid[newBlockage.r()][newBlockage.c()] = "#";
+    List<Map<Coord, Direction>> path = new ArrayList<>();
+    while (!peakNextStep(grid, curr, dir).equals("D")) {
+      Map<Coord, Direction> curAndDir = Map.of(curr, dir);
+      if (path.contains(curAndDir)) {
+        log.info("loop!");
+        return true;
+      }
+      path.add(curAndDir);
+      String next = peakNextStep(grid, curr, dir);
+      if (next.equals("#")) {
+        dir = Direction.right(dir);
+      }
+      curr = curr.relative(dir);
+    }
+    return false;
+  }
+
 
   private Coord findStart(String[][] grid) {
     for (int r = 0; r < grid.length; r++) {
