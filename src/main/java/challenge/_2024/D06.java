@@ -31,9 +31,14 @@ public class D06 extends Solution {
     String[][] grid = inputToGrid(lines);
     Coord curr = findStart(grid);
     Direction dir = Direction.N;
+    Set<Coord> guardNormalPath = findGuardPath(grid, curr, dir);
 
+    log.info("Guard steps: " + guardNormalPath.size());
+    printGrid(grid);
+  }
+
+  private Set<Coord> findGuardPath(String[][] grid, Coord curr, Direction dir){
     Set<Coord> visited = new HashSet<>();
-
     while (!peakNextStep(grid, curr, dir).equals("D")) {
       visited.add(curr);
       String next = peakNextStep(grid, curr, dir);
@@ -43,8 +48,7 @@ public class D06 extends Solution {
       curr = curr.relative(dir);
     }
     visited.add(curr);
-    log.info("Guard steps: " + visited.size());
-    printGrid(grid);
+    return visited;
   }
 
   public void partTwo() {
