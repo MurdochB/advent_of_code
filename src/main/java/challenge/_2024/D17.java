@@ -33,8 +33,35 @@ public class D17 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
-
+    String rawProgram = lines.get(4).split("Program: ")[1];
+    List<Integer> program = Arrays.stream(rawProgram.split(",")).map(Integer::parseInt).toList();
+    for (long initialVal = 109019476330648L; initialVal < 999999999999999L; initialVal++) {
+      long initVal = initialVal;
+      Computer computer = new Computer(initVal, 0, 0, program);
+      computer.execute();
+      if (computer.outputMatchesProgramSoFar()) {
+        computer.printComputer(initVal);
+      }
+    }
   }
+//  'A start'       Octal               first time this output showed up:
+//  24              30                  3,0
+//  192             300                 5,3,0
+//  1538            3002                5,5,3,0
+//  12691           30623               6,5,5,3,0
+//  101532          306234              1,6,5,5,3,0
+//  812258          3062342             0,1,6,5,5,3,0
+//  6498065         30623421            4,0,1,6,5,5,3,0
+//  51984537        306234231           3,4,0,1,6,5,5,3,0
+//  415876298       3062342312          0,3,4,0,1,6,5,5,3,0
+//  3327010386      30623423122         5,0,3,4,0,1,6,5,5,3,0
+//  26616083088     306234231220        7,5,0,3,4,0,1,6,5,5,3,0
+//  212928664708    3062342312204       5,7,5,0,3,4,0,1,6,5,5,3,0
+//  1703429317666   30623423122042      1,5,7,5,0,3,4,0,1,6,5,5,3,0
+//  13627434541331  306234231220423     4,1,5,7,5,0,3,4,0,1,6,5,5,3,0
+//  109019476330648 3062342312204230    2,4,1,5,7,5,0,3,4,0,1,6,5,5,3,0
+
+
 
   private Computer buildComputerFromInput() {
     int a = Integer.parseInt(lines.get(0).split("Register A: ")[1]);
@@ -83,9 +110,15 @@ public class D17 extends Solution {
           default -> throw new IllegalStateException("Unexpected value: " + op);
         }
         ip += 2;
-        printComputer(ip);
       }
-      printComputer(-1);
+    }
+
+    private boolean outputMatchesProgramSoFar() {
+      if (out.size() > opCodes.size()) {
+        return false;
+      }
+      List<Integer> sub = opCodes.subList(opCodes.size() - out.size(), opCodes.size());
+      return sub.equals(out);
     }
 
     private long getCombo(int in) {
@@ -98,12 +131,12 @@ public class D17 extends Solution {
       };
     }
 
-    private void printComputer(int ip) {
-      log.info("ip " + ip + " a " + a + " b " + b + " c " + c + " out: " + String.join(",",
+    private void printComputer(long ip) {
+      log.info("ip " + ip + " ipmod8: " + ip % 8 + " a " + a + " b " + b + " c " + c + " out: " + String.join(",",
           out.stream().map(Long::toString).toList()));
     }
 
-    private String getOutput(){
+    private String getOutput() {
       return String.join(",", out.stream().map(Long::toString).toList());
     }
   }
