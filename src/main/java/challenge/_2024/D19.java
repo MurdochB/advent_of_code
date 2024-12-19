@@ -30,7 +30,7 @@ public class D19 extends Solution {
 
     List<String> towels = getTowels();
     List<String> designs = getDesigns();
-    Map<String, Integer> designCache = new HashMap<>();
+    Map<String, Long> designCache = new HashMap<>();
 
     int count = 0;
     for (String design : designs) {
@@ -41,14 +41,14 @@ public class D19 extends Solution {
     log.info(count);
   }
 
-  private int canMake(String toMake, List<String> towels, Map<String, Integer> cache) {
+  private long canMake(String toMake, List<String> towels, Map<String, Long> cache) {
     if (cache.containsKey(toMake)) {
       return cache.get(toMake);
     }
     if (toMake.isEmpty()) {
       return 1;
     }
-    int found = 0;
+    long found = 0;
     for (String towel : towels) {
       if (toMake.startsWith(towel)) {
         found += canMake(toMake.substring(towel.length()), towels, cache);
@@ -61,6 +61,15 @@ public class D19 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
 
+    List<String> towels = getTowels();
+    List<String> designs = getDesigns();
+    Map<String, Long> designCache = new HashMap<>();
+
+    long total = 0;
+    for (String design : designs) {
+      total += canMake(design, towels, designCache);
+    }
+    log.info(total);
   }
 
   private List<String> getTowels() {
