@@ -1,0 +1,8 @@
+For day 05; Scanning the stationery stacks of sub-basement 17, and we help with a printer.
+
+TL;DR Print queue ordering.
+
+We are given a list of rules specifying that a page should come before another page, and a list of print queues.
+
+For part 1, we're checking only the valid print queues.
+For part 2, we have to fix the in-valid print queues only.

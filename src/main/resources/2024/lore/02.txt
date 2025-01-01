@@ -1,5 +1,7 @@
 For Day 02; We head over to the red-nosed reindeer nuclear fusion/fission plant.
 
+TL;DR List of numbers which must increase or decrease by a set amount - making them 'safe'.
+
 We get a list of reports which contain levels. We are given some rules that mean reports are safe:
 - The levels are either all increasing or all decreasing.
 - Any two adjacent levels differ by at least one and at most three.
