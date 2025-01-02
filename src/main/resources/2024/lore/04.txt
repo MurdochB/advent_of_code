@@ -1,6 +1,6 @@
-For Day 04; Ceres monitoring station is next, and we help with a wordsearch.
+For Day 04; Ceres monitoring station is next, and we help with a word-search.
 
-TL;DR XMAS wordsearch, followed by cross shaped MAS wordsearch.
+TL;DR XMAS word-search, followed by cross shaped MAS word-search.
 
 For part 1, I searched for all the 'X' characters. Then in all cardinal directions, look for 'M', then 'A', then 'S'.
 For part 2, I searched for all the 'A' characters, then checked for MAS in one diagonal, and again in the other diagonal direction.

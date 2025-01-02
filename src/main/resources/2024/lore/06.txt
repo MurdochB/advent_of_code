@@ -1,0 +1,6 @@
+For Day 06, North Pole prototype suit manufacturing lab now, and we must avoid the guard.
+
+TL;DR A guard walking around, can we make them get stuck in loops?
+
+For part 1, we're simulating the guard walking around the obstacles, eventually he goes off the screen, and we count the unique locations they end up in.
+For part 2, we want to find where we can add new obstacles that would cause the guard to get stuck in a loop. 
