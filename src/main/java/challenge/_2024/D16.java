@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -42,38 +43,43 @@ public class D16 extends Solution {
   }
 
   private int findCheapestPath(String[][] grid, Coord start, Coord end) {
-    Map<Coord, Integer> distances = new HashMap<>();
-    distances.put(start, 0);
+    State startState = new State(start, Direction.E);
+
+    Map<State, Integer> distances = new HashMap<>();
+    distances.put(startState, 0);
+
+    PriorityQueue<State> priorityQueue = new PriorityQueue<>(
+        Comparator.comparingInt(State::getCost));
+    priorityQueue.add(new State(start, Direction.E));
+
     Set<Coord> visited = new HashSet<>();
-
-    PriorityQueue<Coord> priorityQueue = new PriorityQueue<>(
-        Comparator.comparingInt(coord -> distances.getOrDefault(coord, Integer.MAX_VALUE)));
-    priorityQueue.add(start);
-
     while (!priorityQueue.isEmpty()) {
-      Coord curr = priorityQueue.poll();
+      State curr = priorityQueue.poll();
+      log.info("checking: {} {}", curr.getCoord(), curr.getCost());
 
-      if (visited.contains(curr)) {
+      if (visited.contains(curr.getCoord())) {
         continue;
       }
-      visited.add(curr);
+      visited.add(curr.getCoord());
 
-      if (curr.equals(end)) {
+      if (curr.getCoord().equals(end)) {
         return distances.get(curr);
       }
-      Direction facing = Direction.E;
+
       for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
-        Coord next = curr.relative(dir);
+        Coord next = curr.getCoord().relative(dir);
         if (!isCoordAWallOrOutOfBounds(grid, next) && !visited.contains(next)) {
+
           int newDistance = distances.get(curr) + 1;
-          if (!facing.equals(dir)) {
+          if (!curr.getDirection().equals(dir)) {
             newDistance += 1000;
-            facing = dir;
           }
 
-          if (newDistance < distances.getOrDefault(next, Integer.MAX_VALUE)) {
-            distances.put(next, newDistance);// probably need to store the direction as well - instead of the map
-            priorityQueue.add(next);
+          if (newDistance < distances.getOrDefault(new State(next, dir), Integer.MAX_VALUE)) {
+            State nextState = new State(next, dir);
+            nextState.setCost(newDistance);
+            distances.put(nextState, newDistance);
+            priorityQueue.add(nextState);
           }
         }
       }
@@ -108,6 +114,59 @@ public class D16 extends Solution {
       }
     }
     return null;
+  }
+
+  public static class State {
+
+    Coord coord;
+    Direction direction;
+    int cost;
+
+    public State(Coord coord, Direction direction) {
+      this.coord = coord;
+      this.direction = direction;
+    }
+
+    public Coord getCoord() {
+      return coord;
+    }
+
+    public void setCoord(Coord coord) {
+      this.coord = coord;
+    }
+
+    public Direction getDirection() {
+      return direction;
+    }
+
+    public void setDirection(Direction direction) {
+      this.direction = direction;
+    }
+
+    public int getCost() {
+      return cost;
+    }
+
+    public void setCost(int cost) {
+      this.cost = cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      State state = (State) o;
+      return Objects.equals(coord, state.coord) && Objects.equals(direction, state.direction);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(coord, direction, cost);
+    }
   }
 
   public void lore() {
