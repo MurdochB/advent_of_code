@@ -69,7 +69,6 @@ public class D16 extends Solution {
       for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
         Coord next = curr.getCoord().relative(dir);
         if (!isCoordAWallOrOutOfBounds(grid, next) && !visited.contains(next)) {
-
           int newDistance = distances.get(curr) + 1;
           if (!curr.getDirection().equals(dir)) {
             newDistance += 1000;
@@ -89,7 +88,7 @@ public class D16 extends Solution {
 
   private boolean isCoordInInGrid(String[][] grid, Coord coord) {
     return !(coord.r() < 0 || coord.r() >= grid.length ||
-        coord.c() < 0 || coord.c() >= grid.length);
+        coord.c() < 0 || coord.c() >= grid[0].length);
   }
 
   private boolean isCoordAWallOrOutOfBounds(String[][] grid, Coord coord) {
@@ -107,7 +106,7 @@ public class D16 extends Solution {
 
   private Coord findChar(String[][] grid, String charToFind) {
     for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
+      for (int c = 0; c < grid[0].length; c++) {
         if (grid[r][c].equals(charToFind)) {
           return new Coord(r, c);
         }
