@@ -52,15 +52,17 @@ public class D16 extends Solution {
         Comparator.comparingInt(State::getCost));
     priorityQueue.add(new State(start, Direction.E));
 
-    Set<Coord> visited = new HashSet<>();
+    Set<State> visited = new HashSet<>();
     while (!priorityQueue.isEmpty()) {
       State curr = priorityQueue.poll();
-      log.info("checking: {} {}", curr.getCoord(), curr.getCost());
+      log.info("-------------");
+      log.info("checking {} {}", curr.getCoord(), curr.getCost());
+      printPrioQ(priorityQueue);
 
-      if (visited.contains(curr.getCoord())) {
+      if (visited.contains(curr)) {
         continue;
       }
-      visited.add(curr.getCoord());
+      visited.add(curr);
 
       if (curr.getCoord().equals(end)) {
         return distances.get(curr);
@@ -73,7 +75,7 @@ public class D16 extends Solution {
           if (!curr.getDirection().equals(dir)) {
             newDistance += 1000;
           }
-
+          log.info("next could be {} with distance {}", next, newDistance);
           if (newDistance < distances.getOrDefault(new State(next, dir), Integer.MAX_VALUE)) {
             State nextState = new State(next, dir);
             nextState.setCost(newDistance);
@@ -84,6 +86,14 @@ public class D16 extends Solution {
       }
     }
     return -1;
+  }
+
+  private void printPrioQ(PriorityQueue<State> priorityQueue) {
+    StringBuilder sb = new StringBuilder();
+    for (State item : priorityQueue) {
+      sb.append("[").append(item.getCoord()).append(" ").append(item.getCost()).append(" ").append("] | ");
+    }
+    log.info("Q has: {}", sb);
   }
 
   private boolean isCoordInInGrid(String[][] grid, Coord coord) {
@@ -164,7 +174,7 @@ public class D16 extends Solution {
 
     @Override
     public int hashCode() {
-      return Objects.hash(coord, direction, cost);
+      return Objects.hash(coord, direction);
     }
   }
 
