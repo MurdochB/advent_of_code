@@ -37,16 +37,16 @@ public class D12 extends Solution {
 
     for (int r = 0; r < grid.length; r++) {
       for (int c = 0; c < grid.length; c++) {
-        Coord field = new Coord(r, c);
-        if (!visited.contains(field)) {
-          List<Coord> thisField = dfs(grid, visited, field, grid[r][c]);
-          if (!thisField.isEmpty()) {
-            fields.add(thisField);
+        Coord startingField = new Coord(r, c);
+        if (!visited.contains(startingField)) {
+          List<Coord> fullField = dfs(grid, visited, startingField, grid[r][c]);
+          if (!fullField.isEmpty()) {
+            fields.add(fullField);
           }
         }
       }
     }
-    long priceForFields = 0L;
+    int priceForFields = 0;
     for (List<Coord> field : fields) {
       priceForFields += priceForField(grid, field);
     }
@@ -54,14 +54,14 @@ public class D12 extends Solution {
     log.info(priceForFields);
   }
 
-  private long priceForField(String[][] grid, List<Coord> field) {
-    long price = 0L;
+  private int priceForField(String[][] grid, List<Coord> field) {
+    int price = 0;
     Coord first = field.get(0);
     String type = grid[first.r()][first.c()];
     for (Coord coord : field) {
       for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
         Coord next = coord.relative(dir);
-        if (isCoordOffTheGrid(grid, next) || !grid[next.r()][next.c()].equals(type)){
+        if (isCoordOffTheGrid(grid, next) || !grid[next.r()][next.c()].equals(type)) {
           price++;
         }
       }
@@ -95,7 +95,7 @@ public class D12 extends Solution {
         grid[coord.r()][coord.c()].equals(type);
   }
 
-  private boolean isCoordOffTheGrid(String[][] grid, Coord coord){
+  private boolean isCoordOffTheGrid(String[][] grid, Coord coord) {
     return (coord.r() < 0 || coord.r() >= grid.length ||
         coord.c() < 0 || coord.c() >= grid.length);
   }
