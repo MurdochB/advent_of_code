@@ -3,7 +3,6 @@ package challenge._2024;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
-import com.sun.jdi.ClassObjectReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -97,17 +96,17 @@ public class D14 extends Solution {
         .map(this::parseIntoRobot)
         .toList();
 
-    for (int i = 0; i < 8000; i++) {
+    int steps = 0;
+    while (!findOverlaps(robots).isEmpty()) {
+      steps++;
       List<Map<Coord, Direction>> newRobots = new ArrayList<>();
       for (Map<Coord, Direction> robot : robots) {
         newRobots.add(stepRobot(robot, gridWidth, gridHeight));
       }
       robots = newRobots;
-      if (findOverlaps(robots).isEmpty()) {
-        logRobots(robots, gridWidth, gridHeight);
-        log.info("Step :" + (i + 1));
-      }
     }
+    logRobots(robots, gridWidth, gridHeight);
+    log.info("Steps taken to find tree: {}", steps);
   }
 
   private List<Coord> findOverlaps(List<Map<Coord, Direction>> robots) {

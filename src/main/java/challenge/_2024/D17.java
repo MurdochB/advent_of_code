@@ -44,6 +44,11 @@ public class D17 extends Solution {
       }
     }
   }
+// Need to do this programmatically...
+// But I was essentially trying values of A until I got the end of my needed output (3,0)
+// I'd then add a 0 to the end of the octal, and start searching again until I found the next 'first time' I find the next number in my output (5,3,0)
+// Repeating this step manually until I got the whole output.
+//
 //  'A start'       Octal               first time this output showed up:
 //  24              30                  3,0
 //  192             300                 5,3,0
@@ -61,8 +66,6 @@ public class D17 extends Solution {
 //  13627434541331  306234231220423     4,1,5,7,5,0,3,4,0,1,6,5,5,3,0
 //  109019476330648 3062342312204230    2,4,1,5,7,5,0,3,4,0,1,6,5,5,3,0
 
-
-
   private Computer buildComputerFromInput() {
     int a = Integer.parseInt(lines.get(0).split("Register A: ")[1]);
     int b = Integer.parseInt(lines.get(1).split("Register B: ")[1]);
@@ -78,22 +81,22 @@ public class D17 extends Solution {
     private long b;
     private long c;
     private int ip;
-    List<Integer> opCodes;
+    List<Integer> program;
     List<Integer> out;
 
-    public Computer(long a, long b, long c, List<Integer> opcodes) {
+    public Computer(long a, long b, long c, List<Integer> program) {
       this.a = a;
       this.b = b;
       this.c = c;
       this.ip = 0;
       this.out = new ArrayList<>();
-      this.opCodes = opcodes;
+      this.program = program;
     }
 
     void execute() {
-      while (ip < opCodes.size()) {
-        int op = opCodes.get(ip);
-        int operand = opCodes.get(ip + 1);
+      while (ip < program.size()) {
+        int op = program.get(ip);
+        int operand = program.get(ip + 1);
         switch (op) {
           case 0 -> a /= (long) Math.pow(2, getCombo(operand));
           case 1 -> b = b ^ operand;
@@ -114,10 +117,10 @@ public class D17 extends Solution {
     }
 
     private boolean outputMatchesProgramSoFar() {
-      if (out.size() > opCodes.size()) {
+      if (out.size() > program.size()) {
         return false;
       }
-      List<Integer> sub = opCodes.subList(opCodes.size() - out.size(), opCodes.size());
+      List<Integer> sub = program.subList(program.size() - out.size(), program.size());
       return sub.equals(out);
     }
 
@@ -132,8 +135,8 @@ public class D17 extends Solution {
     }
 
     private void printComputer(long ip) {
-      log.info("ip " + ip + " ipmod8: " + ip % 8 + " a " + a + " b " + b + " c " + c + " out: " + String.join(",",
-          out.stream().map(Long::toString).toList()));
+      log.info("ip " + ip + " a " + a + " b " + b + " c " + c + " out: " +
+          String.join(",", out.stream().map(Long::toString).toList()));
     }
 
     private String getOutput() {
