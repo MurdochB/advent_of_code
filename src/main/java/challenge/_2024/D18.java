@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -99,7 +98,27 @@ public class D18 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    List<Coord> coordsInput = parseToCoords();
+    Pair<Integer> rowAndColMax = findRowAndColMax(coordsInput);
+    String[][] grid = buildBaseGrid(rowAndColMax);
 
+    for (int i = 0; i < 1024; i++) {
+      Coord c = coordsInput.get(i);
+      grid[c.r()][c.c()] = "#";
+    }
+    Coord start = new Coord(0, 0);
+    Coord end = new Coord(rowAndColMax.getLeft(), rowAndColMax.getRight());
+
+    // from coord 1024 -> search until the maze is unsolvable
+    int tracker = 1024;
+    while (findPathSize(grid, start, end) != -1) {
+      Coord c = coordsInput.get(tracker);
+      grid[c.r()][c.c()] = "#";
+      tracker++;
+    }
+    Coord c = coordsInput.get(tracker - 1);
+    // Somehow I have my coordinates in the wrong orientation - the answer is coord.c(),coord.r()
+    log.info("First coord to block maze [{},{}]", c.c(), c.r());
   }
 
   private String[][] buildBaseGrid(Pair<Integer> rowAndColMax) {
