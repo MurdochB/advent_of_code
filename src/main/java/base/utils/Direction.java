@@ -75,6 +75,16 @@ public class Direction extends Coord {
     return "X";
   }
 
+  public static Direction fromArrow(String arrow){
+    return switch (arrow) {
+      case "^" -> Direction.N;
+      case ">" -> Direction.E;
+      case "v" -> Direction.S;
+      case "<" -> Direction.W;
+      default -> null;
+    };
+  }
+
   public Direction(int dR, int dC) {
     super(dR, dC);
   }
