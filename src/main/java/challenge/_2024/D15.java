@@ -4,7 +4,9 @@ import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,12 +34,47 @@ public class D15 extends Solution {
     List<Direction> steps = getDirectionList();
 
     Coord robot = findInGrid(grid, "@");
+    printGrid(grid);
+    List<Coord> list = new ArrayList<>();
+    list.add(new Coord(4, 4));
+    list.add(new Coord(4, 3));
+    moveItemsInGrid(grid, list, Direction.W);
+    log.info("-------");
+    printGrid(grid);
+//    for (Direction step : steps) {
+//      List<Coord> coordsToMove = checkNextStep(grid, robot, step);
+//      if (!coordsToMove.isEmpty()){
+//
+//      }
+//      Coord nextStep = robot.relative(step);
+//
+//    }
 
-    for (Direction step : steps) {
-      robot.relative(step);
-      // attempt to move robot & boxes.
+  }
+
+  private List<Coord> checkNextStep(String[][] grid, Coord coord, Direction dir) {
+    List<Coord> coordsToMove = new ArrayList<>();
+    Coord next = coord.relative(dir);
+    String nextStepType = grid[next.r()][next.c()];
+    switch (nextStepType) {
+      case "#" -> {
+        return new ArrayList<>();
+      }
+      case "O" -> {
+        coordsToMove.add(next);
+        List<Coord> nextCoordsToMove = checkNextStep(grid, next, dir);
+        if (nextCoordsToMove.isEmpty()) {
+          return new ArrayList<>();
+        } else {
+          return coordsToMove;
+        }
+      }
+      case "." -> {
+        coordsToMove.add(next);
+        return coordsToMove;
+      }
     }
-
+    return coordsToMove;
   }
 
   public void partTwo() {
@@ -45,6 +82,25 @@ public class D15 extends Solution {
 
   }
 
+  private void moveItemsInGrid(String[][] grid, List<Coord> itemsToMove, Direction dir) {
+    Map<Coord, String> movedItem = new HashMap<>();
+    for (Coord coord : itemsToMove) {
+      Coord next = coord.relative(dir);
+      String itemType = grid[coord.r()][coord.c()];
+      grid[coord.r()][coord.c()] = ".";
+      movedItem.put(next, itemType);
+    }
+    for (int r = 0; r < grid.length; r++) {
+      for (int c = 0; c < grid[0].length; c++) {
+        Coord thisStep = new Coord(r, c);
+        if (movedItem.containsKey(thisStep)) {
+          grid[r][c] = movedItem.get(thisStep);
+        }
+      }
+    }
+  }
+
+  // Parsing input
   private String[][] createGrid() {
     int gridSize = lines.get(0).length();
 
@@ -83,6 +139,17 @@ public class D15 extends Solution {
       }
     }
     return new Coord(-1, -1);
+  }
+
+  // debugging tools
+  private void printGrid(String[][] grid) {
+    for (int r = 0; r < grid.length; r++) {
+      StringBuilder sb = new StringBuilder();
+      for (String s : grid[r]) {
+        sb.append(s);
+      }
+      log.info(sb.toString());
+    }
   }
 
   public void lore() {
