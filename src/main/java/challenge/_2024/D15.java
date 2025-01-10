@@ -34,47 +34,36 @@ public class D15 extends Solution {
     List<Direction> steps = getDirectionList();
 
     Coord robot = findInGrid(grid, "@");
-    printGrid(grid);
-    List<Coord> list = new ArrayList<>();
-    list.add(new Coord(4, 4));
-    list.add(new Coord(4, 3));
-    moveItemsInGrid(grid, list, Direction.W);
-    log.info("-------");
-    printGrid(grid);
-//    for (Direction step : steps) {
-//      List<Coord> coordsToMove = checkNextStep(grid, robot, step);
-//      if (!coordsToMove.isEmpty()){
-//
-//      }
-//      Coord nextStep = robot.relative(step);
-//
-//    }
-
-  }
-
-  private List<Coord> checkNextStep(String[][] grid, Coord coord, Direction dir) {
-    List<Coord> coordsToMove = new ArrayList<>();
-    Coord next = coord.relative(dir);
-    String nextStepType = grid[next.r()][next.c()];
-    switch (nextStepType) {
-      case "#" -> {
-        return new ArrayList<>();
-      }
-      case "O" -> {
-        coordsToMove.add(next);
-        List<Coord> nextCoordsToMove = checkNextStep(grid, next, dir);
-        if (nextCoordsToMove.isEmpty()) {
-          return new ArrayList<>();
-        } else {
-          return coordsToMove;
-        }
-      }
-      case "." -> {
-        coordsToMove.add(next);
-        return coordsToMove;
+    for (Direction step : steps) {
+      List<Coord> coordsToMove = checkNextSteps(grid, robot, step);
+      if (!coordsToMove.isEmpty()) {
+        robot = robot.relative(step);
+        moveItemsInGrid(grid, coordsToMove, step);
       }
     }
-    return coordsToMove;
+    printGrid(grid);
+    log.info("GPS Total: {}", calculateFullGPS(grid));
+  }
+
+  private List<Coord> checkNextSteps(String[][] grid, Coord coord, Direction dir) {
+    List<Coord> coordsToMove = new ArrayList<>();
+    coordsToMove.add(coord);
+    while (true) {
+      Coord next = coord.relative(dir);
+      String nextStepType = grid[next.r()][next.c()];
+      switch (nextStepType) {
+        case "O" -> {
+          coordsToMove.add(next);
+          coord = next;
+        }
+        case "." -> {
+          return coordsToMove;
+        }
+        default -> {
+          return new ArrayList<>();
+        }
+      }
+    }
   }
 
   public void partTwo() {
@@ -98,6 +87,15 @@ public class D15 extends Solution {
         }
       }
     }
+  }
+
+  private int calculateFullGPS(String[][] grid){
+    List<Coord> boxes = findAllInGrid(grid, "O");
+    return boxes.stream().mapToInt(this::calculateGPS).sum();
+  }
+
+  private int calculateGPS(Coord c) {
+    return 100 * c.r() + c.c();
   }
 
   // Parsing input
@@ -139,6 +137,18 @@ public class D15 extends Solution {
       }
     }
     return new Coord(-1, -1);
+  }
+
+  private List<Coord> findAllInGrid(String[][] grid, String type) {
+    List<Coord> items = new ArrayList<>();
+    for (int r = 0; r < grid.length; r++) {
+      for (int c = 0; c < grid.length; c++) {
+        if (grid[r][c].equals(type)) {
+          items.add(new Coord(r, c));
+        }
+      }
+    }
+    return items;
   }
 
   // debugging tools
