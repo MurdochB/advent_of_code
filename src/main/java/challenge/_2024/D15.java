@@ -4,9 +4,11 @@ import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,6 +71,41 @@ public class D15 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
 
+    String[][] grid = createGrid();
+    List<Direction> steps = getDirectionList();
+
+    printGrid(grid);
+
+    grid = extendGrid(grid);
+    log.info("converted");
+    Coord robot = findInGrid(grid, "@");
+    printGrid(grid);
+    for (Direction step : steps) {
+
+    }
+  }
+
+  private String[][] extendGrid(String[][] grid) {
+    String[][] newGrid = new String[grid.length][];
+    for (int i = 0; i < grid[0].length; i++) {
+      String[] split = grid[i];
+      String[] splitDoubled = Arrays.stream(split)
+          .flatMap(s ->
+              switch (s) {
+                case "O": {
+                  yield Stream.of("[", "]");
+                }
+                case "@": {
+                  yield Stream.of("@", ".");
+                }
+                default:
+                  yield Stream.of(s, s);
+              }
+          )
+          .toArray(String[]::new);
+      newGrid[i] = splitDoubled;
+    }
+    return newGrid;
   }
 
   private void moveItemsInGrid(String[][] grid, List<Coord> itemsToMove, Direction dir) {
@@ -89,7 +126,7 @@ public class D15 extends Solution {
     }
   }
 
-  private int calculateFullGPS(String[][] grid){
+  private int calculateFullGPS(String[][] grid) {
     List<Coord> boxes = findAllInGrid(grid, "O");
     return boxes.stream().mapToInt(this::calculateGPS).sum();
   }
