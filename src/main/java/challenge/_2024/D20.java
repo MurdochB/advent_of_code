@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -43,19 +42,12 @@ public class D20 extends Solution {
 
     int baseScore = findPathSize(grid, start, end, null);
 
-    List<Coord> potentialCheats = findAllChars(grid, "#");
-    Map<Coord, Integer> cheatingRaceScores = new HashMap<>();
-    for (Coord cheat : potentialCheats) {
-      cheatingRaceScores.put(cheat, baseScore - findPathSize(grid, start, end, cheat));
-    }
-    int wins = 0;
-    for (Integer cheatVals : cheatingRaceScores.values()) {
-      if (cheatVals >= 100) {
-        wins++;
-      }
-    }
-    log.info("Good cheats: {}", wins);
+    long winningCheats = findAllChars(grid, "#").stream()
+        .map(cheat -> baseScore - findPathSize(grid, start, end, cheat))
+        .filter(s -> s >= 100)
+        .count();
 
+    log.info("Good cheats: {}", winningCheats);
   }
 
   private int findPathSize(String[][] grid, Coord start, Coord end, Coord cheat) {
