@@ -32,24 +32,11 @@ public class D12 extends Solution {
     log.info("# Part 1 #");
     this.lore();
     String[][] grid = inputToGrid(lines);
-    Set<Coord> visited = new HashSet<>();
-    List<List<Coord>> fields = new ArrayList<>();
+    List<List<Coord>> fields = getAllFields(grid);
 
-    for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
-        Coord startingField = new Coord(r, c);
-        if (!visited.contains(startingField)) {
-          List<Coord> fullField = dfs(grid, visited, startingField, grid[r][c]);
-          if (!fullField.isEmpty()) {
-            fields.add(fullField);
-          }
-        }
-      }
-    }
-    int priceForFields = 0;
-    for (List<Coord> field : fields) {
-      priceForFields += priceForField(grid, field);
-    }
+    int priceForFields = fields.stream()
+        .mapToInt(f -> priceForField(grid, f))
+        .sum();
 
     log.info(priceForFields);
   }
@@ -69,6 +56,40 @@ public class D12 extends Solution {
     return price * field.size();
   }
 
+  public void partTwo() {
+    log.info("# Part 2 #");
+    String[][] grid = inputToGrid(lines);
+    List<List<Coord>> fields = getAllFields(grid);
+
+    int priceForFields = fields.stream()
+        .mapToInt(f -> bulkDiscountPriceForField(grid, f))
+        .sum();
+    log.info(priceForFields);
+  }
+
+  private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {
+    int price = 1;
+    return price * field.size();
+  }
+
+  private List<List<Coord>> getAllFields(String[][] grid) {
+    List<List<Coord>> fields = new ArrayList<>();
+    Set<Coord> visited = new HashSet<>();
+
+    for (int r = 0; r < grid.length; r++) {
+      for (int c = 0; c < grid.length; c++) {
+        Coord startingField = new Coord(r, c);
+        if (!visited.contains(startingField)) {
+          List<Coord> fullField = dfs(grid, visited, startingField, grid[r][c]);
+          if (!fullField.isEmpty()) {
+            fields.add(fullField);
+          }
+        }
+      }
+    }
+    return fields;
+  }
+
   private List<Coord> dfs(String[][] grid, Set<Coord> visited, Coord field, String type) {
     if (!isValidCoord(grid, visited, field, type)) {
       return new ArrayList<>();
@@ -82,11 +103,6 @@ public class D12 extends Solution {
       allField.addAll(dfs(grid, visited, field.relative(dir), type));
     }
     return allField;
-  }
-
-  public void partTwo() {
-    log.info("# Part 2 #");
-
   }
 
   private boolean isValidCoord(String[][] grid, Set<Coord> visited, Coord coord, String type) {
