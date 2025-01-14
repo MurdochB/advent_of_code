@@ -1,0 +1,3 @@
+Day 16;
+
+Dykstra maze solver. Expensive to turn.

@@ -1,0 +1,3 @@
+Day 17;
+
+Int computer comeback, that makes a program of itself.

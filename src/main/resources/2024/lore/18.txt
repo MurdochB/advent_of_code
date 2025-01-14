@@ -1,0 +1,3 @@
+Day 18;
+
+Maze that eventually gets blocked...
