@@ -68,7 +68,23 @@ public class D12 extends Solution {
   }
 
   private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {
-    int price = 1;
+    int price = 0;
+
+
+    // Tricky shape:
+    //  ..A..
+    //  A.A.A
+    //  AAAAA
+    for (int r = 0; r < grid.length; r++) {
+      List<Coord> inRow = new ArrayList<>();
+      for (Coord f : field) {
+        if (f.r() == 0){
+          inRow.add(f);
+        }
+      }
+
+    }
+
     return price * field.size();
   }
 
@@ -77,7 +93,7 @@ public class D12 extends Solution {
     Set<Coord> visited = new HashSet<>();
 
     for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
+      for (int c = 0; c < grid[0].length; c++) {
         Coord startingField = new Coord(r, c);
         if (!visited.contains(startingField)) {
           List<Coord> fullField = dfs(grid, visited, startingField, grid[r][c]);
