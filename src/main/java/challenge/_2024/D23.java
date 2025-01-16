@@ -28,6 +28,41 @@ public class D23 extends Solution {
   public void partOne() {
     log.info("# Part 1 #");
     this.lore();
+    Map<String, Set<String>> computerToAllConnections = computerToAllConnections();
+
+    Set<Set<String>> networkedComps = new HashSet<>();
+
+    for (Entry<String, Set<String>> thisCompNetwork : computerToAllConnections.entrySet()) {
+      String thisComp = thisCompNetwork.getKey();
+
+      // for all connections this computer has
+      for (String connection : thisCompNetwork.getValue()) {
+        // The connection's networked computers:
+        Set<String> connNetwork = computerToAllConnections.get(connection);
+        Set<String> computersInNetwork = new HashSet<>();
+        computersInNetwork.add(thisComp);
+        computersInNetwork.add(connection);
+        for (String sharedConnection : thisCompNetwork.getValue()) {
+          if (connNetwork.contains(sharedConnection)) {
+            // We want groups of 3
+            Set<String> newSet = new HashSet<>(computersInNetwork);
+            newSet.add(sharedConnection);
+            networkedComps.add(newSet);
+          }
+        }
+      }
+    }
+
+    long setOf3Computers = networkedComps.stream().filter(this::networkContainsTComp).count();
+    log.info(setOf3Computers);
+  }
+
+  public void partTwo() {
+    log.info("# Part 2 #");
+    
+  }
+
+  private Map<String, Set<String>> computerToAllConnections() {
     Map<String, Set<String>> computerToAllConnections = new HashMap<>();
     for (String line : lines) {
       String[] comps = line.split("-");
@@ -40,32 +75,10 @@ public class D23 extends Solution {
       computerToAllConnections.get(comps[0]).add(comps[1]);
       computerToAllConnections.get(comps[1]).add(comps[0]);
     }
-
-    Set<Set<String>> networkedComps = new HashSet<>();
-
-    for (Entry<String, Set<String>> thisCompNetwork : computerToAllConnections.entrySet()) {
-      printEntry(thisCompNetwork);
-      String comp = thisCompNetwork.getKey();
-      for (String connection : thisCompNetwork.getValue()) {
-        Set<String> otherConns = computerToAllConnections.get(connection);
-        Set<String> combo = new HashSet<>();
-        combo.add(comp);
-        combo.add(connection);
-        for (String aaConnection : thisCompNetwork.getValue()) {
-          if (otherConns.contains(aaConnection)) {
-            Set<String> newSet = new HashSet<>(combo);
-            newSet.add(aaConnection);
-            networkedComps.add(newSet);
-          }
-        }
-      }
-    }
-
-    long count = networkedComps.stream().filter(this::method).count();
-    log.info(count);
+    return computerToAllConnections;
   }
 
-  private boolean method(Set<String> computersInNetwork) {
+  private boolean networkContainsTComp(Set<String> computersInNetwork) {
     for (String s : computersInNetwork) {
       if (s.startsWith("t")) {
         return true;
@@ -75,6 +88,7 @@ public class D23 extends Solution {
   }
 
   private void printEntry(Entry<String, Set<String>> networks) {
+    // Prints a computer and the networked computers...
     StringBuilder sb = new StringBuilder();
     sb.append(networks.getKey());
     sb.append(" -> ");
@@ -83,48 +97,6 @@ public class D23 extends Solution {
       sb.append(" ");
     }
     log.info(sb);
-  }
-
-  public void partTwo() {
-    log.info("# Part 2 #");
-    Map<String, Set<String>> computerToAllConnections = new HashMap<>();
-    for (String line : lines) {
-      String[] comps = line.split("-");
-      if (!computerToAllConnections.containsKey(comps[0])) {
-        computerToAllConnections.put(comps[0], new HashSet<>());
-      }
-      if (!computerToAllConnections.containsKey(comps[1])) {
-        computerToAllConnections.put(comps[1], new HashSet<>());
-      }
-      computerToAllConnections.get(comps[0]).add(comps[1]);
-      computerToAllConnections.get(comps[1]).add(comps[0]);
-    }
-
-    Set<Set<String>> networkedComps = new HashSet<>();
-
-    for (Entry<String, Set<String>> thisCompNetwork : computerToAllConnections.entrySet()) {
-      printEntry(thisCompNetwork);
-      String comp = thisCompNetwork.getKey();
-      for (String connection : thisCompNetwork.getValue()) {
-        Set<String> otherConns = computerToAllConnections.get(connection);
-        Set<String> combo = new HashSet<>();
-        combo.add(comp);
-        combo.add(connection);
-        for (String aaConnection : thisCompNetwork.getValue()) {
-          if (otherConns.contains(aaConnection)) {
-            combo.add(aaConnection);
-          }
-        }
-        networkedComps.add(combo);
-      }
-    }
-    int biggest = 0;
-    for (Set<String> networkedComp : networkedComps) {
-      if (networkedComp.size() > biggest){
-        biggest = networkedComp.size();
-      }
-    }
-    log.info(networkedComps.size());
   }
 
   public void lore() {
