@@ -1,11 +1,15 @@
 package challenge._2024;
 
 import base.Solution;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +63,72 @@ public class D23 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
-    
+    Map<String, Set<String>> computerToAllConnections = computerToAllConnections();
+
+    Set<Set<String>> networkedComps = new HashSet<>();
+
+    for (Entry<String, Set<String>> thisCompNetwork : computerToAllConnections.entrySet()) {
+      String thisComp = thisCompNetwork.getKey();
+
+      // for all connections this computer has
+      for (String connection : thisCompNetwork.getValue()) {
+        // The connection's networked computers:
+        Set<String> connNetwork = computerToAllConnections.get(connection);
+        Set<String> computersInNetwork = new HashSet<>();
+        computersInNetwork.add(thisComp);
+        computersInNetwork.add(connection);
+        for (String sharedConnection : thisCompNetwork.getValue()) {
+          if (connNetwork.contains(sharedConnection)) {
+            computersInNetwork.add(sharedConnection);
+          }
+        }
+        networkedComps.add(computersInNetwork);
+      }
+    }
+    // Networked comps now contains all computers that connect in a cycle
+
+    PriorityQueue<Set<String>> q = new PriorityQueue<>(
+        Collections.reverseOrder(Comparator.comparingInt(Set::size)));
+    q.addAll(networkedComps);
+    // Working from the biggest network down, check if the networks' computers are all connected
+    while (!q.isEmpty()) {
+      Set<String> network = q.poll();
+      if (allPresent(computerToAllConnections, network)) {
+        printPass(network);
+        break;
+      }
+    }
+    log.info("found");
+  }
+
+  private boolean allPresent(Map<String, Set<String>> computerToAllConnections,
+      Set<String> network) {
+    // network = A B C
+    // compConn:
+    // A -> B C
+    // B -> A C
+    // C -> A B
+
+    for (String s : network) {
+      Set<String> tester = new HashSet<>();
+      tester.add(s);
+      tester.addAll(computerToAllConnections.get(s));
+      if (!tester.containsAll(network)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void printPass(Set<String> network) {
+    TreeSet<String> tree = new TreeSet<>(network);
+    StringBuilder sb = new StringBuilder();
+    for (String s : tree) {
+      sb.append(s);
+      sb.append(",");
+    }
+    String pass = sb.substring(0, sb.length() - 1);
+    log.info(pass);
   }
 
   private Map<String, Set<String>> computerToAllConnections() {
@@ -87,6 +156,7 @@ public class D23 extends Solution {
     return false;
   }
 
+  // Debugging
   private void printEntry(Entry<String, Set<String>> networks) {
     // Prints a computer and the networked computers...
     StringBuilder sb = new StringBuilder();
