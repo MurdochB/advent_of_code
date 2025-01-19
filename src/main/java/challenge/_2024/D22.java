@@ -1,6 +1,9 @@
 package challenge._2024;
 
 import base.Solution;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,13 +35,49 @@ public class D22 extends Solution {
   private long solve(String s) {
     long secret = Long.parseLong(s);
     for (int i = 0; i < 2000; i++) {
-      long tmp = secret * 64;
-      secret = prune(mix(secret, tmp));
-      tmp = secret / 32;
-      secret = prune(mix(secret, tmp));
-      tmp = secret * 2048;
-      secret = prune(mix(secret, tmp));
+      secret = nextSecret(secret);
     }
+    return secret;
+  }
+
+  public void partTwo() {
+    log.info("# Part 2 #");
+
+    List<List<Long>> changes = lines.stream().map(this::getChangeList).toList();
+
+    log.info("changes!");
+  }
+
+  private List<Long> getChangeList(String startingSecret){
+    List<Long> priceList = getPriceList(startingSecret);
+    List<Long> changes = new ArrayList<>();
+    long start = priceList.get(0);
+    for (int i = 1; i < priceList.size(); i++) {
+      changes.add(priceList.get(i) - start);
+      start = priceList.get(i);
+    }
+    return changes;
+  }
+
+  private List<Long> getPriceList(String startingSecret){
+    long secret = Long.parseLong(startingSecret);
+    List<Long> prices = new ArrayList<>();
+    prices.add(secret % 10);
+
+    for (int i = 0; i < 2000; i++) {
+      secret = nextSecret(secret);
+      prices.add(secret % 10);
+    }
+    return prices;
+  }
+
+  private long nextSecret(Long secret) {
+    long tmp = secret * 64;
+    secret = prune(mix(secret, tmp));
+    tmp = secret / 32;
+    secret = prune(mix(secret, tmp));
+    tmp = secret * 2048;
+    secret = prune(mix(secret, tmp));
     return secret;
   }
 
@@ -48,11 +87,6 @@ public class D22 extends Solution {
 
   private long prune(long secret) {
     return secret % 16777216;
-  }
-
-  public void partTwo() {
-    log.info("# Part 2 #");
-
   }
 
   public void lore() {
