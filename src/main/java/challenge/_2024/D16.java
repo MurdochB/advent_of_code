@@ -120,14 +120,14 @@ public class D16 extends Solution {
   }
 
   private List<State> findAllCheapPaths(String[][] grid, Coord start, Coord end) {
-    State startState = new State(start, Direction.E);
+    State startState = new State(start, Direction.W);
 
     Map<State, Integer> distances = new HashMap<>();
     distances.put(startState, 0);
 
     PriorityQueue<State> priorityQueue = new PriorityQueue<>(
         Comparator.comparingInt(State::getCost));
-    priorityQueue.add(new State(start, Direction.E));
+    priorityQueue.add(startState);
 
     Set<State> visited = new HashSet<>();
     List<State> cheapestPaths = new ArrayList<>();
@@ -167,9 +167,14 @@ public class D16 extends Solution {
             if (newDistance <= checkDistanceForCoord(next, dir, distances)) {
               log.info("next potential cold be {} {} {}", next, Direction.quickString(dir),
                   newDistance);
+
               State nextState = new State(next, dir);
+              if (priorityQueue.contains(nextState)){
+                // merge the two states to share the visited nodes
+              }
               nextState.setCost(newDistance);
               nextState.setPrev(curr);
+              nextState.addVisited(curr.getCoord());
               distances.put(nextState, newDistance);
               priorityQueue.add(nextState);
             }
@@ -208,6 +213,7 @@ public class D16 extends Solution {
 
     private final Logger log = LogManager.getLogger(State.class);
 
+    Set<Coord> visited;
     State prev;
     Coord coord;
     Direction direction;
@@ -216,6 +222,7 @@ public class D16 extends Solution {
     public State(Coord coord, Direction direction) {
       this.coord = coord;
       this.direction = direction;
+      this.visited = new HashSet<>();
     }
 
     public Coord getCoord() {
@@ -282,6 +289,14 @@ public class D16 extends Solution {
       return steps;
     }
 
+    public void addVisited(Coord coord) {
+      visited.add(coord);
+    }
+
+    public void mergeVisited(State otherState) {
+      visited.addAll(otherState.visited);
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -298,6 +313,7 @@ public class D16 extends Solution {
     public int hashCode() {
       return Objects.hash(coord, direction);
     }
+
   }
 
   private void printPrioQ(PriorityQueue<State> priorityQueue) {
