@@ -24,11 +24,47 @@ public class D21 extends Solution {
     log.info("# Part 1 #");
     this.lore();
 
+    long sumComplexities = 0;
     for (String code : lines) {
-      log.info(getNumberFromCode(code));
+      long sequenceLength = sequence(code);
+      long complexity = getNumberFromCode(code) * sequenceLength;
+      log.info("complexity of {} is {}", code, complexity);
+      sumComplexities += complexity;
     }
-
+    log.info("sum of complexity {}", sumComplexities);
   }
+
+  private long sequence(String code) {
+    return 4L;
+  }
+  // Keypad layout:
+  //+---+---+---+ door
+  //| 7 | 8 | 9 |
+  //+---+---+---+
+  //| 4 | 5 | 6 |
+  //+---+---+---+
+  //| 1 | 2 | 3 |
+  //+---+---+---+
+  //    | 0 | A |
+  //    +---+---+
+  //    +---+---+ robot 2
+  //    | ^ | A |
+  //+---+---+---+
+  //| < | v | > |
+  //+---+---+---+
+  //    +---+---+ robot 1
+  //    | ^ | A |
+  //+---+---+---+
+  //| < | v | > |
+  //+---+---+---+
+  //879A: v<<A>>^A
+  // ME:
+  //    +---+---+
+  //    | ^ | A |
+  //+---+---+---+
+  //| < | v | > |
+  //+---+---+---+
+
 
   private int getNumberFromCode(String code) {
     return Integer.parseInt(code.split("A")[0]);
