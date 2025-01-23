@@ -1,6 +1,9 @@
 package challenge._2024;
 
 import base.Solution;
+import base.utils.Pair;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +38,16 @@ public class D21 extends Solution {
   }
 
   private long sequence(String code) {
+    String[] split = code.split("");
+    List<Pair<String>> fromToList = new ArrayList<>();
+    fromToList.add(new Pair<>("A", split[0]));
+    for (int i = 0; i < split.length - 1; i++) {
+      fromToList.add(new Pair<>(split[i], split[i+1]));
+    }
+    for (Pair<String> p : fromToList) {
+      log.info("{} -> {}", p.getLeft(), p.getRight());
+    }
+    log.info(fromToList.size());
     return 4L;
   }
   // Keypad layout:
@@ -47,11 +60,17 @@ public class D21 extends Solution {
   //+---+---+---+
   //    | 0 | A |
   //    +---+---+
+  // 023A
+  // <A^A>AvA
+
   //    +---+---+ robot 2
   //    | ^ | A |
   //+---+---+---+
   //| < | v | > |
   //+---+---+---+
+
+  //V<<A  >>^A <A >A
+
   //    +---+---+ robot 1
   //    | ^ | A |
   //+---+---+---+
