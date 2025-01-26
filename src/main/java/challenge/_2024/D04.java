@@ -35,16 +35,19 @@ public class D04 extends Solution {
     int countAppearances = 0;
     for (Coord x : allXs) {
       for (Direction dir : Direction.ALL_DIRECTIONS) {
-        if (!directionGoesOutOfBounds(x, dir, grid) &&
-            (grid[x.r()][x.c()].equals("X") &&
-                grid[x.relative(dir).r()][x.relative(dir).c()].equals("M") &&
-                grid[x.relative(dir, 2).r()][x.relative(dir, 2).c()].equals("A") &&
-                grid[x.relative(dir, 3).r()][x.relative(dir, 3).c()].equals("S"))) {
+        if (directionStaysInBounds(x, dir, grid) &&
+            (gridValueAtCoord(grid, x.relative(dir)).equals("M") &&
+                gridValueAtCoord(grid, x.relative(dir, 2)).equals("A") &&
+                gridValueAtCoord(grid, x.relative(dir, 3)).equals("S"))) {
           countAppearances++;
         }
       }
     }
     log.info(countAppearances);
+  }
+
+  private String gridValueAtCoord(String[][] grid, Coord c) {
+    return grid[c.r()][c.c()];
   }
 
   public void partTwo() {
@@ -54,13 +57,13 @@ public class D04 extends Solution {
 
     int countAppearances = 0;
     for (Coord a : allAs) {
-      if (!xWouldBeOutOfBounds(a, grid)) {
+      if (xIsInBounds(a, grid)) {
         Coord ne = a.relative(Direction.NE);
         Coord sw = a.relative(Direction.SW);
         Coord nw = a.relative(Direction.NW);
         Coord se = a.relative(Direction.SE);
-        String diag1 = grid[ne.r()][ne.c()] + grid[sw.r()][sw.c()];
-        String diag2 = grid[nw.r()][nw.c()] + grid[se.r()][se.c()];
+        String diag1 = gridValueAtCoord(grid, ne) + gridValueAtCoord(grid, sw);
+        String diag2 = gridValueAtCoord(grid, nw) + gridValueAtCoord(grid, se);
         if (diag1.contains("M") && diag1.contains("S") &&
             diag2.contains("M") && diag2.contains("S")) {
           countAppearances++;
@@ -70,19 +73,11 @@ public class D04 extends Solution {
     log.info(countAppearances);
   }
 
-  private boolean xWouldBeOutOfBounds(Coord a, String[][] grid) {
-    for (Direction dir : Direction.ORDINAL_DIRECTIONS) {
-      if (!isCoordInInGrid(grid, a.relative(dir))) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   private List<Coord> findAllChars(String[][] grid, String charToFind) {
     List<Coord> found = new ArrayList<>();
     for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
+      for (int c = 0; c < grid[0].length; c++) {
         if (grid[r][c].equals(charToFind)) {
           found.add(new Coord(r, c));
         }
@@ -91,12 +86,20 @@ public class D04 extends Solution {
     return found;
   }
 
-  private boolean directionGoesOutOfBounds(Coord x, Direction dir, String[][] grid) {
-    Coord relative = x.relative(dir, 4);
-    return isCoordInInGrid(grid, relative);
+  private boolean xIsInBounds(Coord a, String[][] grid) {
+    for (Direction dir : Direction.ORDINAL_DIRECTIONS) {
+      if (!isCoordInGrid(grid, a.relative(dir))) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  private boolean isCoordInInGrid(String[][] grid, Coord coord) {
+  private boolean directionStaysInBounds(Coord x, Direction dir, String[][] grid) {
+    return isCoordInGrid(grid, x.relative(dir, 3));
+  }
+
+  private boolean isCoordInGrid(String[][] grid, Coord coord) {
     return !(coord.r() < 0 || coord.r() >= grid.length ||
         coord.c() < 0 || coord.c() >= grid.length);
   }
