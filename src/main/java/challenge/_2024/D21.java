@@ -1,9 +1,12 @@
 package challenge._2024;
 
 import base.Solution;
+import base.utils.Coord;
 import base.utils.Pair;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,12 +45,17 @@ public class D21 extends Solution {
     List<Pair<String>> fromToList = new ArrayList<>();
     fromToList.add(new Pair<>("A", split[0]));
     for (int i = 0; i < split.length - 1; i++) {
-      fromToList.add(new Pair<>(split[i], split[i+1]));
+      fromToList.add(new Pair<>(split[i], split[i + 1]));
     }
     for (Pair<String> p : fromToList) {
       log.info("{} -> {}", p.getLeft(), p.getRight());
     }
     log.info(fromToList.size());
+    ControlPad door = new ControlPad(PadType.NUMBER);
+    ControlPad arrow1 = new ControlPad(PadType.ARROW);
+    ControlPad arrow2 = new ControlPad(PadType.ARROW);
+    //
+
     return 4L;
   }
   // Keypad layout:
@@ -61,7 +69,7 @@ public class D21 extends Solution {
   //    | 0 | A |
   //    +---+---+
   // 023A
-  // <A^A>AvA
+  // <A^A >AvA
 
   //    +---+---+ robot 2
   //    | ^ | A |
@@ -69,7 +77,10 @@ public class D21 extends Solution {
   //| < | v | > |
   //+---+---+---+
 
-  //V<<A  >>^A <A >A
+  //V<<A  >>^A
+  //<A >A
+  // vA ^A
+  // v<A >^A
 
   //    +---+---+ robot 1
   //    | ^ | A |
@@ -94,6 +105,40 @@ public class D21 extends Solution {
 
   }
 
+  enum PadType {
+    NUMBER,
+    ARROW
+  }
+
+  public class ControlPad {
+
+    private PadType type;
+
+    private Coord current;
+    private Map<String, Coord> pad;
+
+    public ControlPad(PadType type) {
+      this.type = type;
+      pad = new HashMap<>();
+      if (type.equals(PadType.NUMBER)) {
+        pad.put("7", new Coord(0, 0));
+        pad.put("8", new Coord(0, 1));
+        pad.put("9", new Coord(0, 2));
+        pad.put("4", new Coord(1, 0));
+        pad.put("5", new Coord(1, 1));
+        pad.put("6", new Coord(1, 2));
+        pad.put("0", new Coord(2, 1));
+        pad.put("A", new Coord(2, 2));
+      } else if (type.equals(PadType.ARROW)) {
+        pad.put("^", new Coord(0, 1));
+        pad.put("A", new Coord(0, 2));
+        pad.put("<", new Coord(1, 0));
+        pad.put("v", new Coord(1, 1));
+        pad.put(">", new Coord(1, 2));
+      }
+      current = pad.get("A");
+    }
+  }
 
   public void lore() {
     log.info(lore);
