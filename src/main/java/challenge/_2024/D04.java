@@ -73,7 +73,6 @@ public class D04 extends Solution {
     log.info(countAppearances);
   }
 
-
   private List<Coord> findAllChars(String[][] grid, String charToFind) {
     List<Coord> found = new ArrayList<>();
     for (int r = 0; r < grid.length; r++) {

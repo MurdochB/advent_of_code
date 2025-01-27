@@ -65,6 +65,7 @@ public class D12 extends Solution {
         .mapToInt(f -> bulkDiscountPriceForField(grid, f))
         .sum();
     log.info(priceForFields);
+    // ignore fields, price fences by row / col
   }
 
   private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {

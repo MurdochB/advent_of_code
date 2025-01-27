@@ -15,19 +15,18 @@ public class Direction extends Coord {
   public static final Direction[] CARDINAL_DIRECTIONS = {N, E, S, W};
   public static final Direction[] ORDINAL_DIRECTIONS = {NE, SE, SW, NW};
 
-  public static Direction normalise(Direction dir){
+  public static Direction normalise(Direction dir) {
     // ignore the magnitude of a direction
     int row = dir.dR();
     int col = dir.dC();
-    if (row > 1)
-      row = 1;
-    if (row < 0)
-      row = -1;
-    if (col > 1)
-      col = 1;
-    if (col < 0)
-      col = -1;
+    row = norm(row);
+    col = norm(col);
     return new Direction(row, col);
+  }
+
+  private static int norm(int in) {
+    int s = in < 0 ? -1 : 0;
+    return in > 1 ? 1 : s;
   }
 
   public static Direction right(Direction dir) {
@@ -62,12 +61,12 @@ public class Direction extends Coord {
     return null;
   }
 
-  public static String quickString(Direction d){
-    if (d.equals(N)){
+  public static String quickString(Direction d) {
+    if (d.equals(N)) {
       return "^";
-    } else if (d.equals(E)){
+    } else if (d.equals(E)) {
       return ">";
-    } else if (d.equals(S)){
+    } else if (d.equals(S)) {
       return "v";
     } else if (d.equals(W)) {
       return "<";
@@ -75,7 +74,7 @@ public class Direction extends Coord {
     return "X";
   }
 
-  public static Direction fromArrow(String arrow){
+  public static Direction fromArrow(String arrow) {
     return switch (arrow) {
       case "^" -> Direction.N;
       case ">" -> Direction.E;
