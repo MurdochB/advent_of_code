@@ -47,17 +47,120 @@ public class D21 extends Solution {
     for (int i = 0; i < split.length - 1; i++) {
       fromToList.add(new Pair<>(split[i], split[i + 1]));
     }
+    List<String> doorSteps = new ArrayList<>();
     for (Pair<String> p : fromToList) {
-      log.info("{} -> {}", p.getLeft(), p.getRight());
+      String steps = step(p.getLeft(), p.getRight());
+      log.info("{} -> {} | {}", p.getLeft(), p.getRight(), steps);
+      doorSteps.add(steps);
     }
-    log.info(fromToList.size());
-    ControlPad door = new ControlPad(PadType.NUMBER);
-    ControlPad arrow1 = new ControlPad(PadType.ARROW);
-    ControlPad arrow2 = new ControlPad(PadType.ARROW);
-    //
+    //    +---+---+ robot 2
+    //    | ^ | A |
+    //+---+---+---+
+    //| < | v | > |
+    //+---+---+---+
+    // Keypad layout:
+    //+---+---+---+ door
+    //| 7 | 8 | 9 |
+    //+---+---+---+
+    //| 4 | 5 | 6 |
+    //+---+---+---+
+    //| 1 | 2 | 3 |
+    //+---+---+---+
+    //    | 0 | A |
+    //    +---+---+
+    // 023A
+    // <A^A >^^A vvvA
+
+    List<String> arrowSteps = new ArrayList<>();
+    for (String doorStep : doorSteps) {
+      List<Pair<String>> ftL = new ArrayList<>();
+      String[] split1 = doorStep.split("");
+      ftL.add(new Pair<>("A", split1[0]));
+      for (int i = 0; i < split1.length - 1; i++) {
+        ftL.add(new Pair<>(split1[i], split1[i + 1]));
+      }
+      for (Pair<String> p : ftL) {
+        String ar = arrowStep(p.getLeft(), p.getRight());
+        log.info("{} -> {} | {}", p.getLeft(), p.getRight(), ar);
+        arrowSteps.add(ar);
+      }
+    }
+
 
     return 4L;
   }
+
+  private String step(String from, String to) {
+    //expensive <, v, ^, > cheapest
+    if (from.equals("A") && to.equals("0")) {
+      return "<A";
+    }
+    if (from.equals("0") && to.equals("2")) {
+      return "^A";
+    }
+    if (from.equals("2") && to.equals("9")) {
+      return ">^^A";
+    }
+    if (from.equals("9") && to.equals("A")) {
+      return "vvvA";
+    }
+    return "X";
+  }
+
+  private String arrowStep(String from, String to) {
+    //expensive <, v, ^, > cheapest
+    if (from.equals("A")) {
+      return switch (to) {
+        case "^" -> "<";
+        case ">" -> "v";
+        case "v" -> "v<";
+        case "<" -> "v<<";
+        default -> null;
+      };
+    }
+    if (from.equals("^")) {
+      return switch (to) {
+        case "A" -> ">";
+        case ">" -> ">v";
+        case "v" -> "v";
+        case "<" -> "v<";
+        default -> null;
+      };
+    }
+    if (from.equals(">")) {
+      return switch (to) {
+        case "A" -> "^";
+        case "^" -> "^<";
+        case "v" -> "<";
+        case "<" -> "<<";
+        default -> null;
+      };
+    }
+    if (from.equals("v")) {
+      return switch (to) {
+        case "A" -> ">^";
+        case "^" -> "^";
+        case ">" -> ">";
+        case "<" -> "<";
+        default -> null;
+      };
+    }
+    if (from.equals("<")) {
+      return switch (to) {
+        case "A" -> ">>^";
+        case "^" -> ">^";
+        case ">" -> ">>";
+        case "v" -> ">";
+        default -> null;
+      };
+    }
+    return "X";
+  }
+  //    +---+---+ robot 2
+  //    | ^ | A |
+  //+---+---+---+
+  //| < | v | > |
+  //+---+---+---+
   // Keypad layout:
   //+---+---+---+ door
   //| 7 | 8 | 9 |
@@ -69,7 +172,7 @@ public class D21 extends Solution {
   //    | 0 | A |
   //    +---+---+
   // 023A
-  // <A^A >AvA
+  // <A^A >^^A vvvA
 
   //    +---+---+ robot 2
   //    | ^ | A |
@@ -94,7 +197,6 @@ public class D21 extends Solution {
   //+---+---+---+
   //| < | v | > |
   //+---+---+---+
-
 
   private int getNumberFromCode(String code) {
     return Integer.parseInt(code.split("A")[0]);
