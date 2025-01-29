@@ -47,12 +47,21 @@ public class D21 extends Solution {
     for (int i = 0; i < split.length - 1; i++) {
       fromToList.add(new Pair<>(split[i], split[i + 1]));
     }
+
     List<String> doorSteps = new ArrayList<>();
     for (Pair<String> p : fromToList) {
-      String steps = step(p.getLeft(), p.getRight());
+      String steps = doorStep(p.getLeft(), p.getRight());
       log.info("{} -> {} | {}", p.getLeft(), p.getRight(), steps);
       doorSteps.add(steps);
     }
+
+    // the buttons on the arrow key pad that need to be pressed to get the desired door code:
+    StringBuilder sb = new StringBuilder();
+    sb.append("DOOR STEPS: ");
+    for (String doorStep : doorSteps) {
+      sb.append(doorStep).append(" ");
+    }
+    log.info(sb);
     //    +---+---+ robot 2
     //    | ^ | A |
     //+---+---+---+
@@ -68,8 +77,9 @@ public class D21 extends Solution {
     //+---+---+---+
     //    | 0 | A |
     //    +---+---+
-    // 023A
+    // 029A
     // <A^A >^^A vvvA
+    // v<<A
 
     List<String> arrowSteps = new ArrayList<>();
     for (String doorStep : doorSteps) {
@@ -85,12 +95,33 @@ public class D21 extends Solution {
         arrowSteps.add(ar);
       }
     }
-
+    StringBuilder sb2 = new StringBuilder();
+    sb2.append("ARROW STEPS: ");
+    for (String step : arrowSteps) {
+      sb2.append(step).append(" ");
+    }
+    log.info(sb2);
 
     return 4L;
   }
 
-  private String step(String from, String to) {
+  private String arrowTheArrows(String codeToArrow) {
+    // codeToArrow = ^A
+    StringBuilder sb = new StringBuilder();
+    List<Pair<String>> ftL = new ArrayList<>();
+    String[] split = codeToArrow.split("");
+    ftL.add(new Pair<>("A", split[0]));
+    for (int i = 0; i < split.length - 1; i++) {
+      ftL.add(new Pair<>(split[i], split[i + 1]));
+    }
+    for (Pair<String> p : ftL) {
+      String ar = arrowStep(p.getLeft(), p.getRight());
+      sb.append(ar);
+    }
+    return sb.toString();
+  }
+
+  private String doorStep(String from, String to) {
     //expensive <, v, ^, > cheapest
     if (from.equals("A") && to.equals("0")) {
       return "<A";
@@ -111,46 +142,51 @@ public class D21 extends Solution {
     //expensive <, v, ^, > cheapest
     if (from.equals("A")) {
       return switch (to) {
-        case "^" -> "<";
-        case ">" -> "v";
-        case "v" -> "v<";
-        case "<" -> "v<<";
+        case "^" -> "<A";
+        case ">" -> "vA";
+        case "v" -> "v<A";
+        case "<" -> "v<<A";
+        case "A" -> "A";
         default -> null;
       };
     }
     if (from.equals("^")) {
       return switch (to) {
-        case "A" -> ">";
-        case ">" -> ">v";
-        case "v" -> "v";
-        case "<" -> "v<";
+        case "A" -> ">A";
+        case ">" -> ">vA";
+        case "v" -> "vA";
+        case "<" -> "v<A";
+        case "^" -> "A";
         default -> null;
       };
     }
     if (from.equals(">")) {
       return switch (to) {
-        case "A" -> "^";
-        case "^" -> "^<";
-        case "v" -> "<";
-        case "<" -> "<<";
+        case "A" -> "^A";
+        case "^" -> "^<A";
+        case "v" -> "<A";
+        case "<" -> "<<A";
+        case ">" -> "A";
         default -> null;
       };
     }
     if (from.equals("v")) {
       return switch (to) {
-        case "A" -> ">^";
-        case "^" -> "^";
-        case ">" -> ">";
-        case "<" -> "<";
+        case "A" -> ">^A";
+        case "^" -> "^A";
+        case ">" -> ">A";
+        case "<" -> "<A";
+        case "v" -> "A";
         default -> null;
       };
     }
     if (from.equals("<")) {
       return switch (to) {
-        case "A" -> ">>^";
-        case "^" -> ">^";
-        case ">" -> ">>";
-        case "v" -> ">";
+        case "A" -> ">>^A";
+        case "^" -> ">^A";
+        case ">" -> ">>A";
+        case "v" -> ">A";
+        case "<" -> "A";
         default -> null;
       };
     }
@@ -171,32 +207,8 @@ public class D21 extends Solution {
   //+---+---+---+
   //    | 0 | A |
   //    +---+---+
-  // 023A
+  // 029A
   // <A^A >^^A vvvA
-
-  //    +---+---+ robot 2
-  //    | ^ | A |
-  //+---+---+---+
-  //| < | v | > |
-  //+---+---+---+
-
-  //V<<A  >>^A
-  //<A >A
-  // vA ^A
-  // v<A >^A
-
-  //    +---+---+ robot 1
-  //    | ^ | A |
-  //+---+---+---+
-  //| < | v | > |
-  //+---+---+---+
-  //879A: v<<A>>^A
-  // ME:
-  //    +---+---+
-  //    | ^ | A |
-  //+---+---+---+
-  //| < | v | > |
-  //+---+---+---+
 
   private int getNumberFromCode(String code) {
     return Integer.parseInt(code.split("A")[0]);
