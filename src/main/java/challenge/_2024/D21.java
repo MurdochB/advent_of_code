@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 public class D21 extends Solution {
 
+
+  // 198336 too high
   private final Logger log = LogManager.getLogger(D21.class);
 
   private static final String INPUT_FILE = "2024/inputs/21.txt";
@@ -57,9 +59,8 @@ public class D21 extends Solution {
 
     // the buttons on the arrow key pad that need to be pressed to get the desired door code:
     StringBuilder sb = new StringBuilder();
-    sb.append("DOOR STEPS: ");
     for (String doorStep : doorSteps) {
-      sb.append(doorStep).append(" ");
+      sb.append(doorStep);
     }
     log.info(sb);
     //    +---+---+ robot 2
@@ -81,32 +82,15 @@ public class D21 extends Solution {
     // <A^A >^^A vvvA
     // v<<A
 
-    List<String> arrowSteps = new ArrayList<>();
-    for (String doorStep : doorSteps) {
-      List<Pair<String>> ftL = new ArrayList<>();
-      String[] split1 = doorStep.split("");
-      ftL.add(new Pair<>("A", split1[0]));
-      for (int i = 0; i < split1.length - 1; i++) {
-        ftL.add(new Pair<>(split1[i], split1[i + 1]));
-      }
-      for (Pair<String> p : ftL) {
-        String ar = arrowStep(p.getLeft(), p.getRight());
-        log.info("{} -> {} | {}", p.getLeft(), p.getRight(), ar);
-        arrowSteps.add(ar);
-      }
-    }
-    StringBuilder sb2 = new StringBuilder();
-    sb2.append("ARROW STEPS: ");
-    for (String step : arrowSteps) {
-      sb2.append(step).append(" ");
-    }
-    log.info(sb2);
-
-    return 4L;
+    log.info("DOORCODE: " + sb);
+    String arrows1 = arrowTheArrows(sb.toString());
+    log.info("Arrows 1: " + arrows1);
+    String arrows2 = arrowTheArrows(arrows1);
+    log.info("Arrows 2: " + arrows2);
+    return arrows2.length();
   }
 
   private String arrowTheArrows(String codeToArrow) {
-    // codeToArrow = ^A
     StringBuilder sb = new StringBuilder();
     List<Pair<String>> ftL = new ArrayList<>();
     String[] split = codeToArrow.split("");
@@ -121,11 +105,66 @@ public class D21 extends Solution {
     return sb.toString();
   }
 
+  //    +---+---+ robot 2
+  //    | ^ | A |
+  //+---+---+---+
+  //| < | v | > |
+  //+---+---+---+
+  //+---+---+---+ door
+  //| 7 | 8 | 9 |
+  //+---+---+---+
+  //| 4 | 5 | 6 |
+  //+---+---+---+
+  //| 1 | 2 | 3 |
+  //+---+---+---+
+  //    | 0 | A |
+  //    +---+---+
   private String doorStep(String from, String to) {
     //expensive <, v, ^, > cheapest
-    if (from.equals("A") && to.equals("0")) {
-      return "<A";
+    //
+    // they do:                   <A>A v<<AA>^AA>AvAA^A <vAAA>^A
+    // which translates to:       ^A<<^^A >>AvvvA
+    // I have:                    ^A^^<<A>>AvvvA
+
+    // theres:                    ^A<<^^A >>AvvvA
+    //                            379A
+
+
+
+
+    // all starts I need:
+    // they do:                   <v<A>>^AvA^A<vA<AA>>^AAvA<^A >AAvA^A<vA>^AA<A>A<v<A>A>^A AAvA <^A>A
+    // which translates to:       <A>A v<<AA>^AA> AvAA^A<vAAA>^A
+    // mine is:                   <A>A <AAv<AA>>^ AvAA^Av<AAA>^A
+    //actual 379A: <v<A >>^AvA^A <vA <AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A
+    //mine   379A: v<<A >>^AvA^A v<<A>>^AAv<A<A>>^AAvAA^<A>Av<A>^AA<A>Av<A<A>>^AAAvA^<A>A
+    if (from.equals("A")) {
+      if (to.equals("0")) {
+        return "<A";
+      }
+      if (to.equals("1")) {
+        return "^<<A";
+      }
+      if (to.equals("3")) {
+        return "^A";
+      }
+      if (to.equals("4")) {
+        return "^^<<A";
+      }
+      if (to.equals("5")) {
+        return "^^<A";
+      }
+      if (to.equals("6")) {
+        return "A";
+      }
+      if (to.equals("8")) {
+        return "^^^<A";
+      }
+      if (to.equals("9")) {
+        return "^^^A";
+      }
     }
+    //    029A
     if (from.equals("0") && to.equals("2")) {
       return "^A";
     }
@@ -135,6 +174,74 @@ public class D21 extends Solution {
     if (from.equals("9") && to.equals("A")) {
       return "vvvA";
     }
+    //879A
+    if (from.equals("8") && to.equals("7")) {
+      return "<A";
+    }
+    if (from.equals("7") && to.equals("9")) {
+      return ">>A";
+    }
+    //508A
+    if (from.equals("5") && to.equals("0")) {
+      return "vvA";
+    }
+    if (from.equals("0") && to.equals("8")) {
+      return "^^^A";
+    }
+    if (from.equals("8") && to.equals("A")) {
+      return ">vvvA";
+    }
+    //463A
+    if (from.equals("4") && to.equals("6")) {
+      return ">>A";
+    }
+    if (from.equals("6") && to.equals("3")) {
+      return "vA";
+    }
+    if (from.equals("3") && to.equals("A")) {
+      return "vA";
+    }
+    //593A
+    if (from.equals("5") && to.equals("9")) {
+      return ">^A";
+    }
+    if (from.equals("9") && to.equals("3")) {
+      return "vvA";
+    }
+    //189A
+    if (from.equals("1") && to.equals("8")) {
+      return ">^^A";
+    }
+    if (from.equals("8") && to.equals("9")) {
+      return ">A";
+    }
+
+
+    if (from.equals("9") && to.equals("8")) {
+      return "<A";
+    }
+    if (from.equals("8") && to.equals("0")) {
+      return "vvvA";
+    }
+    if (from.equals("0") && to.equals("A")) {
+      return ">A";
+    }
+    if (from.equals("1") && to.equals("7")) {
+      return "^^A";
+    }
+    if (from.equals("4") && to.equals("5")) {
+      return ">A";
+    }
+    if (from.equals("5") && to.equals("6")) {
+      return ">A";
+    }
+    if (from.equals("6") && to.equals("A")) {
+      return "vvA";
+    }
+    if (from.equals("3") && to.equals("7")) {
+      return "<<^^A";
+    }
+
     return "X";
   }
 
@@ -258,3 +365,4 @@ public class D21 extends Solution {
     log.info(lore);
   }
 }
+//029A
