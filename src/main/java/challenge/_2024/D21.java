@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 public class D21 extends Solution {
 
-
-  // 198336 too high
+  // part 1: 198336 too high
+  // part 1: 188384 correct
   private final Logger log = LogManager.getLogger(D21.class);
 
   private static final String INPUT_FILE = "2024/inputs/21.txt";
@@ -152,13 +152,13 @@ public class D21 extends Solution {
         return "^^<<A";
       }
       if (to.equals("5")) {
-        return "^^<A";
+        return "<^^A";
       }
       if (to.equals("6")) {
-        return "A";
+        return "^^A";
       }
       if (to.equals("8")) {
-        return "^^^<A";
+        return "<^^^A";
       }
       if (to.equals("9")) {
         return "^^^A";
@@ -189,7 +189,7 @@ public class D21 extends Solution {
       return "^^^A";
     }
     if (from.equals("8") && to.equals("A")) {
-      return ">vvvA";
+      return "vvv>A";
     }
     //463A
     if (from.equals("4") && to.equals("6")) {
@@ -203,14 +203,14 @@ public class D21 extends Solution {
     }
     //593A
     if (from.equals("5") && to.equals("9")) {
-      return ">^A";
+      return "^>A";
     }
     if (from.equals("9") && to.equals("3")) {
       return "vvA";
     }
     //189A
     if (from.equals("1") && to.equals("8")) {
-      return ">^^A";
+      return "^^>A";
     }
     if (from.equals("8") && to.equals("9")) {
       return ">A";
