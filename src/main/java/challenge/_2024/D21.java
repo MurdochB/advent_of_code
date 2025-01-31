@@ -129,9 +129,6 @@ public class D21 extends Solution {
     // theres:                    ^A<<^^A >>AvvvA
     //                            379A
 
-
-
-
     // all starts I need:
     // they do:                   <v<A>>^AvA^A<vA<AA>>^AAvA<^A >AAvA^A<vA>^AA<A>A<v<A>A>^A AAvA <^A>A
     // which translates to:       <A>A v<<AA>^AA> AvAA^A<vAAA>^A
@@ -215,7 +212,6 @@ public class D21 extends Solution {
     if (from.equals("8") && to.equals("9")) {
       return ">A";
     }
-
 
     if (from.equals("9") && to.equals("8")) {
       return "<A";
@@ -324,7 +320,46 @@ public class D21 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
 
+    long sumComplexities = 0;
+    for (String code : lines) {
+      long sequenceLength = sequence2(code);
+      long complexity = getNumberFromCode(code) * sequenceLength;
+      log.info("complexity of {} is {}", code, complexity);
+      sumComplexities += complexity;
+    }
+    log.info("sum of complexity {}", sumComplexities);
   }
+
+  private long sequence2(String code) {
+    String[] split = code.split("");
+    List<Pair<String>> fromToList = new ArrayList<>();
+    fromToList.add(new Pair<>("A", split[0]));
+    for (int i = 0; i < split.length - 1; i++) {
+      fromToList.add(new Pair<>(split[i], split[i + 1]));
+    }
+
+    List<String> doorSteps = new ArrayList<>();
+    for (Pair<String> p : fromToList) {
+      String steps = doorStep(p.getLeft(), p.getRight());
+//      log.info("{} -> {} | {}", p.getLeft(), p.getRight(), steps);
+      doorSteps.add(steps);
+    }
+
+    // the buttons on the arrow key pad that need to be pressed to get the desired door code:
+    StringBuilder sb = new StringBuilder();
+    for (String doorStep : doorSteps) {
+      sb.append(doorStep);
+    }
+    log.info("DOORCODE: " + sb);
+    String arrows = sb.toString();
+    for (int i = 0; i < 25; i++) {
+      arrows = arrowTheArrows(arrows);
+      log.info("{} length: {}", i, arrows.length());
+    }
+
+    return arrows.length();
+  }
+
 
   enum PadType {
     NUMBER,
