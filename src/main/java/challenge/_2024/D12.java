@@ -65,12 +65,11 @@ public class D12 extends Solution {
         .mapToInt(f -> bulkDiscountPriceForField(grid, f))
         .sum();
     log.info(priceForFields);
-    // ignore fields, price fences by row / col
+    // price fences by row / col
   }
 
   private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {
     int price = 0;
-
 
     // Tricky shape:
     //  ..A..
@@ -79,13 +78,11 @@ public class D12 extends Solution {
     for (int r = 0; r < grid.length; r++) {
       List<Coord> inRow = new ArrayList<>();
       for (Coord f : field) {
-        if (f.r() == 0){
+        if (f.r() == 0) {
           inRow.add(f);
         }
       }
-
     }
-
     return price * field.size();
   }
 

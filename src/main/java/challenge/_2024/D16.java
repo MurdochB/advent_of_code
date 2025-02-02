@@ -169,7 +169,7 @@ public class D16 extends Solution {
                   newDistance);
 
               State nextState = new State(next, dir);
-              if (priorityQueue.contains(nextState)){
+              if (priorityQueue.contains(nextState)) {
                 // merge the two states to share the visited nodes
               }
               nextState.setCost(newDistance);

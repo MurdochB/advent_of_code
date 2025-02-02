@@ -33,9 +33,9 @@ public class D13 extends Solution {
 
   private long parseMachine(String machine, long offset) {
     String[] split = machine.split("\n");
-    //Button A: X+94, Y+34
-    //Button B: X+22, Y+67
-    //Prize: X=8400, Y=5400
+    // Button A: X+94, Y+34
+    // Button B: X+22, Y+67
+    // Prize: X=8400, Y=5400
     // Becomes two simultaneous equations:
     // aX + bX = X
     // bY + bY = Y

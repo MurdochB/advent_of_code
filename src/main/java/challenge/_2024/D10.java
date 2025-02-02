@@ -41,29 +41,29 @@ public class D10 extends Solution {
     log.info("Total score: " + totalScore);
   }
 
-  private int scoreTrailHead(String[][] grid, Coord pos, int cur, Set<Coord> visited){
+  private int scoreTrailHead(String[][] grid, Coord pos, int cur, Set<Coord> visited) {
     visited.add(pos);
-    if(cur == 9){
+    if (cur == 9) {
       return 1;
     }
     int score = 0;
     for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
       Coord step = pos.relative(dir);
-      if (isNextNumber(cur + 1, step, grid) && !visited.contains(step)){
+      if (isNextNumber(cur + 1, step, grid) && !visited.contains(step)) {
         score += scoreTrailHead(grid, step, Integer.parseInt(grid[step.r()][step.c()]), visited);
       }
     }
     return score;
   }
 
-  private int rateTrailHead(String[][] grid, Coord pos, int cur){
-    if(cur == 9){
+  private int rateTrailHead(String[][] grid, Coord pos, int cur) {
+    if (cur == 9) {
       return 1;
     }
     int rating = 0;
     for (Direction dir : Direction.CARDINAL_DIRECTIONS) {
       Coord step = pos.relative(dir);
-      if (isNextNumber(cur + 1, step, grid)){
+      if (isNextNumber(cur + 1, step, grid)) {
         rating += rateTrailHead(grid, step, Integer.parseInt(grid[step.r()][step.c()]));
       }
     }

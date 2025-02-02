@@ -50,7 +50,7 @@ public class D08 extends Solution {
         }
         List<Coord> coords = oneStepAntinodeCoords(group.get(i), group.get(j));
         for (Coord coord : coords) {
-          if (isAntinodeInGrid(grid, coord)){
+          if (isAntinodeInGrid(grid, coord)) {
             antinodes.add(coord);
           }
         }
@@ -89,7 +89,7 @@ public class D08 extends Solution {
         }
         List<Coord> coords = allAntinodes(grid, group.get(i), group.get(j));
         for (Coord coord : coords) {
-          if (isAntinodeInGrid(grid, coord)){
+          if (isAntinodeInGrid(grid, coord)) {
             antinodes.add(coord);
           }
         }
@@ -104,12 +104,12 @@ public class D08 extends Solution {
     Direction one = a.distance(b);
     Direction two = b.distance(a);
     Coord nextAntiNode = b.relative(one);
-    while (isAntinodeInGrid(grid, nextAntiNode)){
+    while (isAntinodeInGrid(grid, nextAntiNode)) {
       antis.add(nextAntiNode);
       nextAntiNode = nextAntiNode.relative(one);
     }
     nextAntiNode = a.relative(two);
-    while (isAntinodeInGrid(grid, nextAntiNode)){
+    while (isAntinodeInGrid(grid, nextAntiNode)) {
       antis.add(nextAntiNode);
       nextAntiNode = nextAntiNode.relative(two);
     }
