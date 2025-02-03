@@ -75,15 +75,38 @@ public class D12 extends Solution {
     //  ..A..
     //  A.A.A
     //  AAAAA
+
+    // ROWS
+    int top = 0;
+    boolean found = false;
     for (int r = 0; r < grid.length; r++) {
-      List<Coord> inRow = new ArrayList<>();
-      for (Coord f : field) {
-        if (f.r() == 0) {
-          inRow.add(f);
+      for (int c = 0; c < grid[0].length; c++) {
+        Coord coord = new Coord(r, c);
+        if (field.contains(coord) &&
+            isOpenInDirection(grid, coord, Direction.N, field)) {
+          found = true;
+        } else {
+          if (found) {
+            top++;
+            found = false;
+          }
         }
       }
     }
+
     return price * field.size();
+  }
+
+  private boolean isOpenInDirection(String[][] grid, Coord coord, Direction dir,
+      List<Coord> field) {
+    Coord neighbour = coord.relative(dir);
+    if (isCoordOffTheGrid(grid, coord)) {
+      return true;
+    } else if (field.contains(neighbour)) {
+      return false;
+    }
+
+    return true;
   }
 
   private List<List<Coord>> getAllFields(String[][] grid) {
