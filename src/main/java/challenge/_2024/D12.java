@@ -103,10 +103,6 @@ public class D12 extends Solution {
         found = false;
       }
     }
-    if (found) {
-      top++;
-      log.info("top ++ END");
-    }
 
     int bottom = 0;
     boolean found2 = false;
@@ -132,14 +128,59 @@ public class D12 extends Solution {
         found2 = false;
       }
     }
-    if (found2) {
-      bottom++;
-      log.info("bot ++ END");
+
+    int left = 0;
+    boolean found3 = false;
+    for (int c = 0; c < grid[0].length; c++) {
+      for (int r = 0; r < grid.length; r++) {
+        Coord coord = new Coord(r, c);
+        if (field.contains(coord) &&
+            isOpenInDirection(grid, coord, Direction.W, field)) {
+          found3 = true;
+          log.info("left [{}, {}]", r, c);
+        } else {
+          if (found3) {
+            left++;
+            log.info("left ++");
+            found3 = false;
+          }
+        }
+      }
+      if (found3) {
+        left++;
+        log.info("left ++");
+        found3 = false;
+      }
     }
 
-    log.info("FIELD RESULTS: " + top + " " + bottom);
 
-    return price * field.size();
+    int right = 0;
+    boolean found4 = false;
+    for (int c = 0; c < grid[0].length; c++) {
+      for (int r = 0; r < grid.length; r++) {
+        Coord coord = new Coord(r, c);
+        if (field.contains(coord) &&
+            isOpenInDirection(grid, coord, Direction.E, field)) {
+          found4 = true;
+          log.info("right [{}, {}]", r, c);
+        } else {
+          if (found4) {
+            right++;
+            log.info("right ++");
+            found4 = false;
+          }
+        }
+      }
+      if (found4) {
+        right++;
+        log.info("right ++");
+        found4 = false;
+      }
+    }
+
+    log.info("FIELD RESULTS: " + top + " " + bottom + " " + left  + " " + right);
+
+    return (top + bottom + left + right) * field.size();
   }
 
   private boolean isOpenInDirection(String[][] grid, Coord coord, Direction dir,
