@@ -76,6 +76,9 @@ public class D12 extends Solution {
     //  A.A.A
     //  AAAAA
 
+    // .XXX
+    // XXXX
+
     // ROWS
     int top = 0;
     boolean found = false;
@@ -85,14 +88,56 @@ public class D12 extends Solution {
         if (field.contains(coord) &&
             isOpenInDirection(grid, coord, Direction.N, field)) {
           found = true;
+          log.info("top [{}, {}]", r, c);
         } else {
           if (found) {
             top++;
+            log.info("top ++");
             found = false;
           }
         }
       }
+      if (found) {
+        top++;
+        log.info("top ++");
+        found = false;
+      }
     }
+    if (found) {
+      top++;
+      log.info("top ++ END");
+    }
+
+    int bottom = 0;
+    boolean found2 = false;
+    for (int r = 0; r < grid.length; r++) {
+      for (int c = 0; c < grid[0].length; c++) {
+        Coord coord = new Coord(r, c);
+        if (field.contains(coord) &&
+            isOpenInDirection(grid, coord, Direction.S, field)) {
+          found2 = true;
+          log.info("bot [{}, {}]", r, c);
+        } else {
+          if (found2) {
+            bottom++;
+            log.info("bot ++");
+            found2 = false;
+          }
+        }
+      }
+
+      if (found2) {
+        bottom++;
+        log.info("bot ++");
+        found2 = false;
+      }
+    }
+    if (found2) {
+      bottom++;
+      log.info("bot ++ END");
+    }
+
+    log.info("FIELD RESULTS: " + top + " " + bottom);
 
     return price * field.size();
   }
