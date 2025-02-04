@@ -150,7 +150,7 @@ public class D12 extends Solution {
 
   private boolean isCoordOffTheGrid(String[][] grid, Coord coord) {
     return (coord.r() < 0 || coord.r() >= grid.length ||
-        coord.c() < 0 || coord.c() >= grid.length);
+        coord.c() < 0 || coord.c() >= grid[0].length);
   }
 
   public void lore() {
