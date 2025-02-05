@@ -69,118 +69,72 @@ public class D12 extends Solution {
   }
 
   private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {
-    int price = 0;
+    int sides = 0;
 
-    // Tricky shape:
-    //  ..A..
-    //  A.A.A
-    //  AAAAA
+    // horizontal sides
+    sides += calculateHorizonalSides(grid, field);
+    // vertical sides
+    sides += calculateVerticalSides(grid, field);
 
-    // .XXX
-    // XXXX
+    return sides * field.size();
+  }
 
-    // ROWS
-    int top = 0;
-    boolean found = false;
-    for (int r = 0; r < grid.length; r++) {
+  private int calculateVerticalSides(String[][] grid, List<Coord> field) {
+    int sides = 0;
+    List<Direction> dirs = new ArrayList<>();
+    dirs.add(Direction.W);
+    dirs.add(Direction.E);
+    for (Direction dir : dirs) {
+      boolean found = false;
       for (int c = 0; c < grid[0].length; c++) {
-        Coord coord = new Coord(r, c);
-        if (field.contains(coord) &&
-            isOpenInDirection(grid, coord, Direction.N, field)) {
-          found = true;
-          log.info("top [{}, {}]", r, c);
-        } else {
-          if (found) {
-            top++;
-            log.info("top ++");
-            found = false;
+        for (int r = 0; r < grid.length; r++) {
+          Coord coord = new Coord(r, c);
+          if (field.contains(coord) &&
+              isOpenInDirection(grid, coord, dir, field)) {
+            found = true;
+          } else {
+            if (found) {
+              sides++;
+              found = false;
+            }
           }
         }
-      }
-      if (found) {
-        top++;
-        log.info("top ++");
-        found = false;
-      }
-    }
-
-    int bottom = 0;
-    boolean found2 = false;
-    for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid[0].length; c++) {
-        Coord coord = new Coord(r, c);
-        if (field.contains(coord) &&
-            isOpenInDirection(grid, coord, Direction.S, field)) {
-          found2 = true;
-          log.info("bot [{}, {}]", r, c);
-        } else {
-          if (found2) {
-            bottom++;
-            log.info("bot ++");
-            found2 = false;
-          }
+        if (found) {
+          sides++;
+          found = false;
         }
       }
-
-      if (found2) {
-        bottom++;
-        log.info("bot ++");
-        found2 = false;
-      }
     }
+    return sides;
+  }
 
-    int left = 0;
-    boolean found3 = false;
-    for (int c = 0; c < grid[0].length; c++) {
+  private int calculateHorizonalSides(String[][] grid, List<Coord> field) {
+    int sides = 0;
+    List<Direction> dirs = new ArrayList<>();
+    dirs.add(Direction.N);
+    dirs.add(Direction.S);
+    for (Direction dir : dirs) {
+      boolean found = false;
       for (int r = 0; r < grid.length; r++) {
-        Coord coord = new Coord(r, c);
-        if (field.contains(coord) &&
-            isOpenInDirection(grid, coord, Direction.W, field)) {
-          found3 = true;
-          log.info("left [{}, {}]", r, c);
-        } else {
-          if (found3) {
-            left++;
-            log.info("left ++");
-            found3 = false;
+        for (int c = 0; c < grid[0].length; c++) {
+          Coord coord = new Coord(r, c);
+          if (field.contains(coord) &&
+              isOpenInDirection(grid, coord, dir, field)) {
+            found = true;
+          } else {
+            if (found) {
+              sides++;
+              found = false;
+            }
           }
         }
-      }
-      if (found3) {
-        left++;
-        log.info("left ++");
-        found3 = false;
-      }
-    }
-
-
-    int right = 0;
-    boolean found4 = false;
-    for (int c = 0; c < grid[0].length; c++) {
-      for (int r = 0; r < grid.length; r++) {
-        Coord coord = new Coord(r, c);
-        if (field.contains(coord) &&
-            isOpenInDirection(grid, coord, Direction.E, field)) {
-          found4 = true;
-          log.info("right [{}, {}]", r, c);
-        } else {
-          if (found4) {
-            right++;
-            log.info("right ++");
-            found4 = false;
-          }
+        if (found) {
+          sides++;
+          found = false;
         }
       }
-      if (found4) {
-        right++;
-        log.info("right ++");
-        found4 = false;
-      }
     }
-
-    log.info("FIELD RESULTS: " + top + " " + bottom + " " + left  + " " + right);
-
-    return (top + bottom + left + right) * field.size();
+    return sides;
   }
 
   private boolean isOpenInDirection(String[][] grid, Coord coord, Direction dir,
