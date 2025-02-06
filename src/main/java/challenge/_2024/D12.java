@@ -65,15 +65,10 @@ public class D12 extends Solution {
         .mapToInt(f -> bulkDiscountPriceForField(grid, f))
         .sum();
     log.info(priceForFields);
-    // price fences by row / col
   }
 
   private int bulkDiscountPriceForField(String[][] grid, List<Coord> field) {
-    int sides = 0;
-
-    // horizontal sides
-    sides += calculateHorizonalSides(grid, field);
-    // vertical sides
+    int sides = calculateHorizonalSides(grid, field);
     sides += calculateVerticalSides(grid, field);
 
     return sides * field.size();
@@ -142,11 +137,9 @@ public class D12 extends Solution {
     Coord neighbour = coord.relative(dir);
     if (isCoordOffTheGrid(grid, coord)) {
       return true;
-    } else if (field.contains(neighbour)) {
-      return false;
+    } else {
+      return !field.contains(neighbour);
     }
-
-    return true;
   }
 
   private List<List<Coord>> getAllFields(String[][] grid) {

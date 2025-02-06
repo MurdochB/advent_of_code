@@ -77,7 +77,6 @@ public class D15 extends Solution {
     printGrid(grid);
 
     grid = extendGrid(grid);
-    log.info("converted");
     Coord robot = findInGrid(grid, "@");
     printGrid(grid);
     for (Direction step : steps) {
