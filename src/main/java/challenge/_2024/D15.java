@@ -80,7 +80,33 @@ public class D15 extends Solution {
     Coord robot = findInGrid(grid, "@");
     printGrid(grid);
     for (Direction step : steps) {
+      List<Coord> coordsToMove = checkNextStepWithBoxes(grid, robot, step);
+      if (!coordsToMove.isEmpty()) {
+        robot = robot.relative(step);
+        moveItemsInGrid(grid, coordsToMove, step);
+      }
+    }
+  }
 
+  private List<Coord> checkNextStepWithBoxes(String[][] grid, Coord coord, Direction dir) {
+    List<Coord> coordsToMove = new ArrayList<>();
+    coordsToMove.add(coord);
+    List<Coord> movingNodes = new ArrayList<>();
+    while (true) {
+      Coord next = coord.relative(dir);
+      String nextStepType = grid[next.r()][next.c()];
+      switch (nextStepType) {
+        case "[", "]" -> {
+          coordsToMove.add(next);
+          coord = next;
+        }
+        case "." -> {
+          return coordsToMove;
+        }
+        default -> {
+          return new ArrayList<>();
+        }
+      }
     }
   }
 
