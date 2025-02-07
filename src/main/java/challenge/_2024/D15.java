@@ -91,8 +91,8 @@ public class D15 extends Solution {
   private List<Coord> checkNextStepWithBoxes(String[][] grid, Coord coord, Direction dir) {
     List<Coord> coordsToMove = new ArrayList<>();
     coordsToMove.add(coord);
-    List<Coord> movingNodes = new ArrayList<>();
     while (true) {
+      // instead of one 'next' coord - use a list and add both sides of the box ?
       Coord next = coord.relative(dir);
       String nextStepType = grid[next.r()][next.c()];
       switch (nextStepType) {
