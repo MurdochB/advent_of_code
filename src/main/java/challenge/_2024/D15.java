@@ -6,8 +6,10 @@ import base.utils.Direction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,22 +93,35 @@ public class D15 extends Solution {
   private List<Coord> checkNextStepWithBoxes(String[][] grid, Coord coord, Direction dir) {
     List<Coord> coordsToMove = new ArrayList<>();
     coordsToMove.add(coord);
+    Set<Coord> movingNodes = new HashSet<>();
+    movingNodes.add(coord);
     while (true) {
       // instead of one 'next' coord - use a list and add both sides of the box ?
-      Coord next = coord.relative(dir);
-      String nextStepType = grid[next.r()][next.c()];
-      switch (nextStepType) {
-        case "[", "]" -> {
-          coordsToMove.add(next);
-          coord = next;
-        }
-        case "." -> {
-          return coordsToMove;
-        }
-        default -> {
-          return new ArrayList<>();
+      for (Coord n : movingNodes) {
+        Coord next = n.relative(dir);
+        String nextStepType = grid[next.r()][next.c()];
+        switch (nextStepType) {
+          case "["-> {
+            coordsToMove.add(next);
+            movingNodes.add(next);
+            movingNodes.add(next.relative(Direction.E));
+            movingNodes.remove(n);
+          }
+          case "]"-> {
+            coordsToMove.add(next);
+            movingNodes.add(next);
+            movingNodes.add(next.relative(Direction.W));
+            movingNodes.remove(n);
+          }
+          case "." -> {
+            return coordsToMove;
+          }
+          default -> {
+            return new ArrayList<>();
+          }
         }
       }
+
     }
   }
 
