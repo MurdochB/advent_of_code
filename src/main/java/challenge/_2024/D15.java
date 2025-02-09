@@ -97,21 +97,20 @@ public class D15 extends Solution {
     movingNodes.add(coord);
     while (true) {
       // instead of one 'next' coord - use a list and add both sides of the box ?
+      Set<Coord> newMovingNodes = new HashSet<>();
       for (Coord n : movingNodes) {
         Coord next = n.relative(dir);
         String nextStepType = grid[next.r()][next.c()];
         switch (nextStepType) {
           case "["-> {
             coordsToMove.add(next);
-            movingNodes.add(next);
-            movingNodes.add(next.relative(Direction.E));
-            movingNodes.remove(n);
+            newMovingNodes.add(next);
+            newMovingNodes.add(next.relative(Direction.E));
           }
           case "]"-> {
             coordsToMove.add(next);
-            movingNodes.add(next);
-            movingNodes.add(next.relative(Direction.W));
-            movingNodes.remove(n);
+            newMovingNodes.add(next);
+            newMovingNodes.add(next.relative(Direction.W));
           }
           case "." -> {
             return coordsToMove;
