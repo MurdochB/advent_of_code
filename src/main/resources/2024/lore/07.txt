@@ -1,3 +1,8 @@
-For Day 07;
+For Day 07; We cross a familiar bridge, but it needs some repairs.
 
 Missing operators.
+TL;DR We are given a number, and a list of numbers with missing operators. We need to find the numbers that are possible to make.
+
+For part 1, we can use only + and * operators. Looping through each line, we can split out the resultant and the operands.
+ next we can try all possible combinations of operands to find the lines that are possible.
+For part 2, there is another operator | which appends the next number. We can just simply add this to the list of possible operators to check.

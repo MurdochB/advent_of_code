@@ -1,4 +1,4 @@
-For Day 06, North Pole prototype suit manufacturing lab now, and we must avoid the guard.
+For Day 06; North Pole prototype suit manufacturing lab now, and we must avoid the guard.
 
 TL;DR A guard walking around, can we make them get stuck in loops?
 

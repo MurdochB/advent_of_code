@@ -1,4 +1,4 @@
-For day 05; Scanning the stationery stacks of sub-basement 17, and we help with a printer.
+For Day 05; Scanning the stationery stacks of sub-basement 17, and we help with a printer.
 
 TL;DR Print queue ordering.
 
