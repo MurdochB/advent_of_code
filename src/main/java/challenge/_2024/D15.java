@@ -88,39 +88,51 @@ public class D15 extends Solution {
         moveItemsInGrid(grid, coordsToMove, step);
       }
     }
+    printGrid(grid);
+    log.info("GPS Total: {}", calculateFullGPSPart2(grid));
   }
 
   private List<Coord> checkNextStepWithBoxes(String[][] grid, Coord coord, Direction dir) {
-    List<Coord> coordsToMove = new ArrayList<>();
+    Set<Coord> coordsToMove = new HashSet<>();
     coordsToMove.add(coord);
-    Set<Coord> movingNodes = new HashSet<>();
-    movingNodes.add(coord);
+    Set<Coord> movingNodesToCheck = new HashSet<>();
+    movingNodesToCheck.add(coord);
     while (true) {
       // instead of one 'next' coord - use a list and add both sides of the box ?
       Set<Coord> newMovingNodes = new HashSet<>();
-      for (Coord n : movingNodes) {
+      boolean allFree = true;
+      for (Coord n : movingNodesToCheck) {
         Coord next = n.relative(dir);
         String nextStepType = grid[next.r()][next.c()];
         switch (nextStepType) {
-          case "["-> {
+          case "[" -> {
             coordsToMove.add(next);
+            coordsToMove.add(next.relative(Direction.E));
             newMovingNodes.add(next);
             newMovingNodes.add(next.relative(Direction.E));
+            allFree = false;
           }
-          case "]"-> {
+          case "]" -> {
             coordsToMove.add(next);
+            coordsToMove.add(next.relative(Direction.W));
             newMovingNodes.add(next);
             newMovingNodes.add(next.relative(Direction.W));
+            allFree = false;
           }
           case "." -> {
-            return coordsToMove;
+            // do nothing
           }
           default -> {
+            // wall - don't move at all.
             return new ArrayList<>();
           }
         }
       }
-
+      if (allFree) {
+        return coordsToMove.stream().toList();
+      }
+      newMovingNodes.removeAll(movingNodesToCheck);
+      movingNodesToCheck = newMovingNodes;
     }
   }
 
@@ -167,6 +179,11 @@ public class D15 extends Solution {
 
   private int calculateFullGPS(String[][] grid) {
     List<Coord> boxes = findAllInGrid(grid, "O");
+    return boxes.stream().mapToInt(this::calculateGPS).sum();
+  }
+
+  private int calculateFullGPSPart2(String[][] grid) {
+    List<Coord> boxes = findAllInGrid(grid, "[");
     return boxes.stream().mapToInt(this::calculateGPS).sum();
   }
 
