@@ -177,18 +177,18 @@ public class D15 extends Solution {
     }
   }
 
-  private int calculateFullGPS(String[][] grid) {
+  private Long calculateFullGPS(String[][] grid) {
     List<Coord> boxes = findAllInGrid(grid, "O");
-    return boxes.stream().mapToInt(this::calculateGPS).sum();
+    return boxes.stream().mapToLong(this::calculateGPS).sum();
   }
 
-  private int calculateFullGPSPart2(String[][] grid) {
+  private Long calculateFullGPSPart2(String[][] grid) {
     List<Coord> boxes = findAllInGrid(grid, "[");
-    return boxes.stream().mapToInt(this::calculateGPS).sum();
+    return boxes.stream().mapToLong(this::calculateGPS).sum();
   }
 
-  private int calculateGPS(Coord c) {
-    return 100 * c.r() + c.c();
+  private Long calculateGPS(Coord c) {
+    return 100L * c.r() + c.c();
   }
 
   // Parsing input
@@ -235,7 +235,7 @@ public class D15 extends Solution {
   private List<Coord> findAllInGrid(String[][] grid, String type) {
     List<Coord> items = new ArrayList<>();
     for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
+      for (int c = 0; c < grid[0].length; c++) {
         if (grid[r][c].equals(type)) {
           items.add(new Coord(r, c));
         }
