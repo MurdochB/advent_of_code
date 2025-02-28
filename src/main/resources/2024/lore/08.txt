@@ -1,3 +1,6 @@
-For Day 08;
+For Day 08; We get to the roof of a top-secret Easter Bunny installation & notice a huge Antenna.
 
-Antenna & Anti-nodes.
+TL;DR Antennas make antinodes, we want to find unique antinodes within a maps space.
+
+For part 1, I can make use of my Direction class to work out where the antinodes will be. For example if point A -> B is +5 north & +6 east - I can use that direction to find the antinode (as B + that direction). 
+For part 2, the antinodes now extend along their path indefinitely, so I can just repeat the process above until the antinodes are out of bounds.
