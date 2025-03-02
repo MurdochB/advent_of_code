@@ -1,11 +1,6 @@
-For Day 10;  We get to the roof of a top-secret Easter Bunny installation & notice a huge Antenna.
+For Day 10;  We arrive at a Lava Production Facility on a floating island
 
-Finding the peaks.
+TL;DR Finding the peaks in a topographic map.
 
-
-For day 09;  We get to the roof of a top-secret Easter Bunny installation & notice a huge Antenna.
-
-TL;DR Disk de-fragging.
-
-For part 1, I can make use of my Direction class to work out where the antinodes will be. For example if point A -> B is +5 north & +6 east - I can use that direction to find the antinode (as B + that direction).
-For part 2, the antinodes now extend along their path indefinitely, so I can just repeat the process above until the antinodes are out of bounds.
+For part 1, we're calculating the number of times you can reach the peak.
+For part 2, we're calculating the unique number of times you can reach each peak.
