@@ -32,7 +32,7 @@ public class D03 extends Solution {
     Set<Coord> giftedHouses = new HashSet<>();
 
     Coord current = new Coord(0, 0);
-    giftedHouses.add(new Coord(current.r(), current.c()));
+    giftedHouses.add(current);
 
     for (String instruction : instructions) {
       Direction dir = Direction.fromArrow(instruction);
@@ -40,7 +40,7 @@ public class D03 extends Solution {
         continue;
       }
       current = current.relative(dir);
-      giftedHouses.add(new Coord(current.r(), current.c()));
+      giftedHouses.add(current);
     }
     log.info(giftedHouses.size());
   }
