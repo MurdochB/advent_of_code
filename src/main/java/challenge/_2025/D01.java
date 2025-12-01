@@ -13,7 +13,7 @@ public class D01 extends Solution {
   private static final String INPUT_FILE = "2025/inputs/01.txt";
   private static final String LORE_FILE = "2025/lore/01.txt";
 
-  private static final String OUTPUT = "Zeros count: {}";
+  private static final String OUTPUT = "Zeroes count: {}";
 
   private D01(String inputFile, String loreFile) {
     super(inputFile, loreFile);
@@ -27,28 +27,27 @@ public class D01 extends Solution {
   public void partOne() {
     log.info("# Part 1 #");
     this.lore();
-    Pair<Integer> dialAndZeros = new Pair<>(50, 0);
+    Pair<Integer> dialAndZeroes = new Pair<>(50, 0);
 
-    lines.forEach(l -> processLine(dialAndZeros, l));
+    lines.forEach(l -> processLine(dialAndZeroes, l));
 
-    log.info(OUTPUT, dialAndZeros.getRight());
+    log.info(OUTPUT, dialAndZeroes.getRight());
   }
 
   public void partTwo() {
     log.info("# Part 2 #");
-    Pair<Integer> dialAndZeros = new Pair<>(50, 0);
+    Pair<Integer> dialAndZeroes = new Pair<>(50, 0);
 
-    lines.forEach(l -> processLinePt2(dialAndZeros, l));
+    lines.forEach(l -> processLinePt2(dialAndZeroes, l));
 
-    log.info(OUTPUT, dialAndZeros.getRight());
+    log.info(OUTPUT, dialAndZeroes.getRight());
   }
 
-  private void processLine(Pair<Integer> dialAndZeros, String line) {
-    // parse step into ["L/R", 1-9999]
+  private void processLine(Pair<Integer> dialAndZeroes, String line) {
+    // parse step into ["L/R operation", rotation count]
     SplitPair<String, Integer> step = parseStep(line);
     int val = step.getRight() % 100;
-
-    int dial = dialAndZeros.getLeft();
+    int dial = dialAndZeroes.getLeft();
 
     if (step.getLeft().equals("R")) {
       dial += val;
@@ -56,21 +55,20 @@ public class D01 extends Solution {
       dial -= val;
     }
     dial = normaliseDial(dial);
-    dialAndZeros.setLeft(dial);
+    dialAndZeroes.setLeft(dial);
     if (dial == 0) {
-      dialAndZeros.setRight(dialAndZeros.getRight() + 1);
+      dialAndZeroes.setRight(dialAndZeroes.getRight() + 1);
     }
   }
 
-  private void processLinePt2(Pair<Integer> dialAndZeros, String line) {
-    // parse step into ["L/R", 1-9999]
+  private void processLinePt2(Pair<Integer> dialAndZeroes, String line) {
+    // parse step into ["L/R operation", rotation count]
     SplitPair<String, Integer> step = parseStep(line);
     int val = step.getRight() % 100;
-
     int magnitude = step.getRight() / 100;
-    dialAndZeros.setRight(dialAndZeros.getRight() + magnitude);
+    dialAndZeroes.setRight(dialAndZeroes.getRight() + magnitude);
 
-    int dial = dialAndZeros.getLeft();
+    int dial = dialAndZeroes.getLeft();
     int prevDial = dial;
 
     if (step.getLeft().equals("R")) {
@@ -80,10 +78,8 @@ public class D01 extends Solution {
     }
     Pair<Integer> newDial = normaliseAndCountCrosses(prevDial, dial);
 
-    dialAndZeros.setLeft(newDial.getLeft());
-    dialAndZeros.setRight(dialAndZeros.getRight() + newDial.getRight());
-
-    log.info(line + " |" + dialAndZeros.getLeft() + " " + dialAndZeros.getRight());
+    dialAndZeroes.setLeft(newDial.getLeft());
+    dialAndZeroes.setRight(dialAndZeroes.getRight() + newDial.getRight());
   }
 
   private SplitPair<String, Integer> parseStep(String line) {
@@ -112,12 +108,10 @@ public class D01 extends Solution {
     return new Pair<>(dial, 0);
   }
 
-  /*
-  2025-12-01 09:34:51,722 INFO  Zero count: 1007
-  2025-12-01 09:34:51,722 INFO  # Part 2 #
-  2025-12-01 09:34:51,723 INFO  Zero count: 5820
-   */
   public void lore() {
     log.info(lore);
+    // Hard coded answers:
+    // Part 1: 1007
+    // Part 2: 5820
   }
 }
