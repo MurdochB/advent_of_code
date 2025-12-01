@@ -71,12 +71,14 @@ public class D01 extends Solution {
     dialAndZeros.setRight(dialAndZeros.getRight() + magnitude);
 
     int dial = dialAndZeros.getLeft();
+    int prevDial = dial;
+
     if (step.getLeft().equals("R")) {
       dial += val;
     } else {
       dial -= val;
     }
-    Pair<Integer> newDial = normaliseAndCountCrosses(dial);
+    Pair<Integer> newDial = normaliseAndCountCrosses(prevDial, dial);
 
     dialAndZeros.setLeft(newDial.getLeft());
     dialAndZeros.setRight(dialAndZeros.getRight() + newDial.getRight());
@@ -98,12 +100,14 @@ public class D01 extends Solution {
     return dial % 100;
   }
 
-  private Pair<Integer> normaliseAndCountCrosses(int dial) {
+  private Pair<Integer> normaliseAndCountCrosses(int prevDial, int dial) {
     if (dial < 0) {
-      return new Pair<>(100 + dial, 1);
-    } else if (dial >= 100) {
+      return new Pair<>(100 + dial, (prevDial == 0) ? 0 : 1);
+    } else if (dial > 100) {
       dial %= 100;
       return new Pair<>(dial, 1);
+    } else if (dial == 100 || dial == 0) {
+      return new Pair<>(0, 1);
     }
     return new Pair<>(dial, 0);
   }
