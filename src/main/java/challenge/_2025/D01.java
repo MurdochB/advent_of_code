@@ -1,6 +1,7 @@
 package challenge._2025;
 
 import base.Solution;
+import base.utils.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,7 @@ public class D01 extends Solution {
     for (String line : lines) {
       dial = processLine(dial, line);
       log.info("DIAL: {}", dial);
-      if (dial == 0){
+      if (dial == 0) {
         zeroCount++;
       }
     }
@@ -41,12 +42,12 @@ public class D01 extends Solution {
     int val = Integer.parseInt(line.substring(1));
     val = val % 100;
 
-    if (operation.equals("R")){
+    if (operation.equals("R")) {
       currentDial += val;
     } else {
       currentDial -= val;
     }
-    if (currentDial < 0){
+    if (currentDial < 0) {
       currentDial = 100 + currentDial;
     }
     return currentDial % 100;
@@ -54,7 +55,48 @@ public class D01 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    Pair<Integer> dialAndZeroCount = new Pair<>(50, 0);
 
+    for (String line : lines) {
+      dialAndZeroCount = processLinePt2(dialAndZeroCount, line);
+    }
+    log.info("Zero count: {}", dialAndZeroCount.getRight());
+  }
+
+  private Pair<Integer> processLinePt2(Pair<Integer> dialAndZeroCount, String line) {
+    String operation = line.substring(0, 1);
+    int val = Integer.parseInt(line.substring(1));
+    log.info("dial {} | rotate {} {}", dialAndZeroCount.getLeft(), operation, val);
+
+    int magnitude = val / 100;
+
+    val = val % 100;
+
+    boolean wasZeroAlready = dialAndZeroCount.getLeft() == 0;
+    int currentDial = dialAndZeroCount.getLeft();
+    int currentZeros = dialAndZeroCount.getRight();
+    currentZeros += magnitude;
+
+    if (operation.equals("R")) {
+      currentDial += val;
+    } else {
+      currentDial -= val;
+    }
+    if (currentDial < 0) {
+      if (!wasZeroAlready) {
+        currentZeros++;
+      }
+      currentDial = 100 + currentDial;
+    } else if (currentDial >= 100) {
+      currentZeros++;
+    }
+    if (currentDial == 0) {
+      currentZeros++;
+    }
+    dialAndZeroCount.setLeft(currentDial % 100);
+    dialAndZeroCount.setRight(currentZeros);
+    log.info("dial {} | zeros {}", dialAndZeroCount.getLeft(), dialAndZeroCount.getRight());
+    return dialAndZeroCount;
   }
 
   public void lore() {
