@@ -50,7 +50,25 @@ public class D02 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
     List<String> ranges = getRanges(wholeLines);
+    long sumInvalidIds = 0L;
 
+    for (String range : ranges) {
+      String[] split = range.split("-");
+      split[1] = split[1].split("\n")[0];
+      sumInvalidIds += countInvalidIdsPt2(split[0], split[1]);
+    }
+    log.info(sumInvalidIds);
+  }
+
+  private long countInvalidIdsPt2(String start, String end) {
+    long total = 0L;
+    while (!start.equals(end)) {
+      if (!isValidIdPt2(start)) {
+        total += Long.parseLong(start);
+      }
+      start = String.valueOf(Long.parseLong(start) + 1);
+    }
+    return total;
   }
 
   private List<String> getRanges(String input) {
@@ -64,6 +82,21 @@ public class D02 extends Solution {
     String firstHalf = input.substring(0, input.length() / 2);
     String secondHalf = input.substring(input.length() / 2);
     return !firstHalf.equals(secondHalf);
+  }
+
+  private boolean isValidIdPt2(String input) {
+    for (int i = 0; i < input.length() / 2; i++) {
+      String substring = input.substring(0, i + 1);
+      StringBuilder sb = new StringBuilder();
+      sb.append(substring);
+      while (sb.length() < input.length()) {
+        sb.append(substring);
+      }
+      if (sb.toString().equals(input)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public void lore() {
