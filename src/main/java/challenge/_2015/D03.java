@@ -3,6 +3,7 @@ package challenge._2015;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +48,34 @@ public class D03 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+    List<String> instructions = Arrays.stream(wholeLines.split("")).toList();
+    Set<Coord> giftedHouses = new HashSet<>();
+
+    List<Coord> deliverySantas = new ArrayList<>();
+    deliverySantas.add(new Coord(0, 0));
+    deliverySantas.add(new Coord(0, 0));
+
+    giftedHouses.add(new Coord(0, 0));
+
+    boolean flip = false;
+
+    for (String instruction : instructions) {
+      Direction dir = Direction.fromArrow(instruction);
+      if (dir == null) {
+        continue;
+      }
+      if (!flip){
+        Coord nextStop = deliverySantas.get(0).relative(dir);
+        deliverySantas.set(0, nextStop);
+        giftedHouses.add(nextStop);
+      } else {
+        Coord nextStop = deliverySantas.get(1).relative(dir);
+        deliverySantas.set(1, nextStop);
+        giftedHouses.add(nextStop);
+      }
+      flip = !flip;
+    }
+    log.info(giftedHouses.size());
   }
 
   @Override
