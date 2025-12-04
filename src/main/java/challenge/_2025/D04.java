@@ -2,7 +2,6 @@ package challenge._2025;
 
 import static base.utils.Direction.ALL_DIRECTIONS;
 import static base.utils.FileUtil.inputToGrid;
-import static base.utils.FileUtil.readLines;
 
 import base.Solution;
 import base.utils.Coord;
@@ -43,6 +42,26 @@ public class D04 extends Solution {
   public void partTwo() {
     log.info("# Part 2 #");
 
+    String[][] grid = inputToGrid(lines);
+    List<Coord> allPaper = findAllPaper(grid);
+    List<Coord> removedPaper = new ArrayList<>();
+
+    boolean removedFlag = true;
+
+    while (removedFlag) {
+      removedFlag = false;
+      allPaper.removeAll(removedPaper);
+
+      for (Coord coord : allPaper) {
+        if (isPaperReachable(grid, coord)) {
+          removedPaper.add(coord);
+          grid[coord.r()][coord.c()] = ".";
+          removedFlag = true;
+        }
+      }
+    }
+
+    log.info(removedPaper.size());
   }
 
   private List<Coord> findAllPaper(String[][] grid) {
@@ -57,11 +76,12 @@ public class D04 extends Solution {
     return found;
   }
 
+  private boolean isPaperReachable(String grid[][], Coord paper) {
+    return (allSurroundingPaper(grid, paper).size() < 4);
+  }
+
   private int paperReachable(String[][] grid, Coord paper) {
-    if (allSurroundingPaper(grid, paper).size() < 4){
-      return 1;
-    }
-    return 0;
+    return isPaperReachable(grid, paper) ? 1 : 0;
   }
 
   private List<Coord> allSurroundingPaper(String[][] grid, Coord target) {
