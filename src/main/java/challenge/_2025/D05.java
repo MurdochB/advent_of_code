@@ -4,7 +4,9 @@ import base.Solution;
 import base.utils.Pair;
 import base.utils.SplitPair;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +47,18 @@ public class D05 extends Solution {
 
   public void partTwo() {
     log.info("# Part 2 #");
+
+    SplitPair<List<Pair<Long>>, List<Long>> in = parseInput(lines);
+    List<Pair<Long>> freshRanges = in.getLeft();
+    Set<Long> freshIds = new HashSet<>();
+
+    for (Pair<Long> freshRange : freshRanges) {
+      for (long l = freshRange.getLeft(); l <= freshRange.getRight(); l++) {
+        freshIds.add(l);
+      }
+
+    }
+    log.info("Fresh IDs: {}", freshIds.size());
 
   }
 
