@@ -4,9 +4,7 @@ import base.Solution;
 import base.utils.Pair;
 import base.utils.SplitPair;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,16 +47,34 @@ public class D05 extends Solution {
     log.info("# Part 2 #");
 
     SplitPair<List<Pair<Long>>, List<Long>> in = parseInput(lines);
-    List<Pair<Long>> freshRanges = in.getLeft();
-    Set<Long> freshIds = new HashSet<>();
+    List<Pair<Long>> allFreshRanges = in.getLeft();
+    List<Pair<Long>> minimisedRanges = new ArrayList<>();
 
-    for (Pair<Long> freshRange : freshRanges) {
-      for (long l = freshRange.getLeft(); l <= freshRange.getRight(); l++) {
-        freshIds.add(l);
+    for (Pair<Long> incoming : allFreshRanges) {
+      List<Pair<Long>> newMinimisedRange = new ArrayList<>();
+      for (Pair<Long> m : minimisedRanges) {
+        // this range:  [ ----- ]           [ ---- ]
+        // m         :             [ ---- ]
+        if (incoming.getRight() < m.getLeft() ||
+            incoming.getLeft() > m.getRight()) {
+          // outside this minimised range, maybe still add it
+          newMinimisedRange.add(m);
+        } else {
+          // this range:       [ ----- ]
+          // m         :            [ ------ ]
+          incoming = new Pair<>(Math.min(incoming.getLeft(), m.getLeft()),
+              Math.max(incoming.getRight(), m.getRight()));
+        }
       }
-
+      newMinimisedRange.add(incoming);
+      minimisedRanges = newMinimisedRange;
     }
-    log.info("Fresh IDs: {}", freshIds.size());
+    long grandTotal = 0L;
+    for (Pair<Long> r : minimisedRanges) {
+      grandTotal += (r.getRight() - r.getLeft()) + 1;
+    }
+
+    log.info("Fresh IDs: {}", grandTotal);
 
   }
 
