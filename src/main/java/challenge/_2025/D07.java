@@ -5,7 +5,9 @@ import static base.utils.FileUtil.inputToGrid;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,12 +51,32 @@ public class D07 extends Solution {
       }
       beams = updatedBeams;
     }
-    log.info("Beams: {}, split: {}", beams.size(), splitCount);
+    log.info("Splits: {}", splitCount);
   }
 
   public void partTwo() {
     log.info("# Part 2 #");
 
+    String[][] grid = inputToGrid(lines);
+    List<Coord> beams = new ArrayList<>();
+    beams.add(findStart(grid));
+
+    long timelines = 0L;
+
+    for (int i = 0; i < lines.size() - 1; i++) {
+      List<Coord> updatedBeams = new ArrayList<>();
+      for (Coord beam : beams) {
+        if (isSplitter(grid, beam.relative(Direction.S))) {
+          timelines++;
+          updatedBeams.add(beam.relative(Direction.SW));
+          updatedBeams.add(beam.relative(Direction.SE));
+        } else {
+          updatedBeams.add(beam.relative(Direction.S));
+        }
+      }
+      beams = updatedBeams;
+    }
+    log.info("Timelines: {}", timelines + 1);
   }
 
   private Coord findStart(String[][] grid) {
