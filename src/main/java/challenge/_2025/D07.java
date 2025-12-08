@@ -5,9 +5,9 @@ import static base.utils.FileUtil.inputToGrid;
 import base.Solution;
 import base.utils.Coord;
 import base.utils.Direction;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,30 +58,30 @@ public class D07 extends Solution {
     log.info("# Part 2 #");
 
     String[][] grid = inputToGrid(lines);
-    List<Coord> beams = new ArrayList<>();
-    beams.add(findStart(grid));
-
-    long timelines = 0L;
+    Map<Coord, Integer> beams = new HashMap<>();
+    beams.put(findStart(grid), 1);
 
     for (int i = 0; i < lines.size() - 1; i++) {
-      List<Coord> updatedBeams = new ArrayList<>();
-      for (Coord beam : beams) {
+      Map<Coord, Integer> updatedBeams = new HashMap<>();
+      for (Coord beam : beams.keySet()) {
         if (isSplitter(grid, beam.relative(Direction.S))) {
-          timelines++;
-          updatedBeams.add(beam.relative(Direction.SW));
-          updatedBeams.add(beam.relative(Direction.SE));
+          updatedBeams.put(beam.relative(Direction.SW),
+              updatedBeams.getOrDefault(beam.relative(Direction.SW), 0) + beams.get(beam));
+          updatedBeams.put(beam.relative(Direction.SE),
+              updatedBeams.getOrDefault(beam.relative(Direction.SE), 0) + beams.get(beam));
         } else {
-          updatedBeams.add(beam.relative(Direction.S));
+          updatedBeams.put(beam.relative(Direction.S), beams.get(beam));
         }
       }
       beams = updatedBeams;
     }
-    log.info("Timelines: {}", timelines + 1);
+    int timelines = beams.values().stream().mapToInt(Integer::valueOf).sum();
+    log.info("Timelines: {}", timelines);
   }
 
   private Coord findStart(String[][] grid) {
     for (int r = 0; r < grid.length; r++) {
-      for (int c = 0; c < grid.length; c++) {
+      for (int c = 0; c < grid[0].length; c++) {
         if (grid[r][c].equals("S")) {
           return new Coord(r, c);
         }
