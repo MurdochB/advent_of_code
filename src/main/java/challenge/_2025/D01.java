@@ -83,6 +83,8 @@ public class D01 extends Solution {
   }
 
   private SplitPair<String, Integer> parseStep(String line) {
+    // Could actually parse this into just the change to make:
+    // E.g R10 = 10, L10 = -10
     String op = line.substring(0, 1);
     int val = Integer.parseInt(line.substring(1));
 
